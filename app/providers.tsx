@@ -12,7 +12,7 @@ import { clientEnv } from "@/utils/config/clientEnv";
 const { wallets } = getDefaultWallets();
 
 const config = getDefaultConfig({
-    appName: 'EthCC Card',
+    appName: 'Lets talk EthCC',
     projectId: 'YOUR_PROJECT_ID',
     wallets: [
         ...wallets,

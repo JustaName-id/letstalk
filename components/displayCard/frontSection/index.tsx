@@ -1,9 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { SanitizedRecords } from "@justaname.id/sdk";
-import { useMemo } from "react"
-import { SocialCard } from "./socialCard";
-import { useEnsAvatar } from "@justaname.id/react";
 import { clientEnv } from "@/utils/config/clientEnv";
+import { useEnsAvatar } from "@justaname.id/react";
+import { SanitizedRecords } from "@justaname.id/sdk";
+import { useMemo } from "react";
+import { SocialCard } from "./socialCard";
 
 export interface FrontSectionProps {
     subname: SanitizedRecords;
@@ -42,7 +42,7 @@ export const FrontSection = ({ subname, onFlip, ens }: FrontSectionProps) => {
 
 
     return (
-        <div onClick={onFlip} className="flex flex-col gap-5 p-7" >
+        <div onClick={onFlip} className="flex flex-col gap-5 p-7 h-full flex-1" >
             <div className={`flex flex-col gap-5 h-full`}>
                 <div className="flex flex-row py-2.5 w-full items-center gap-2.5">
                     <Avatar className="w-16 h-16 rounded-full">

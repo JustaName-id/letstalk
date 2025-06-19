@@ -16,6 +16,6 @@ export default async function EnsPage({ params }: { params: Promise<{ ens: strin
         );
     }
     return (
-        <DisplaySection ens={ens} className="h-full" records={initialRecords} />
+        <DisplaySection ens={ens} className="min-h-[calc(100vh-40px)] h-full" records={initialRecords} />
     );
 } 

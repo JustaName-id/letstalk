@@ -1,4 +1,4 @@
-import { GlobeIcon, DiscordIcon, GithubIcon, TelegramIcon, XIcon } from "@/lib/icons";
+import { DiscordIcon, GithubIcon, GlobeIcon, TelegramIcon, XIcon } from "@/lib/icons";
 import { useMemo } from "react";
 
 export interface SocialCardProps {

@@ -4,9 +4,10 @@ const CLIENT_ENV = {
   websiteUrl: process.env.NEXT_PUBLIC_URL,
   chainId: process.env.NEXT_PUBLIC_CHAIN_ID,
   providerUrl: process.env.NEXT_PUBLIC_PROVIDER_URL,
-  devMode: process.env.NEXT_PUBLIC_DEV_MODE,
+  devMode: process.env.NEXT_PUBLIC_DEV === "true",
   justaNameDomain: process.env.NEXT_PUBLIC_JUSTANAME_DOMAIN,
   justaNameOrigin: process.env.NEXT_PUBLIC_JUSTANAME_ORIGIN,
+  justaNameEns: process.env.NEXT_PUBLIC_JUSTANAME_ENS,
 };
 
 export const clientEnvSchema = z.object({
@@ -19,6 +20,7 @@ export const clientEnvSchema = z.object({
   devMode: z.boolean().default(false),
   justaNameDomain: z.string(),
   justaNameOrigin: z.string(),
+  justaNameEns: z.string(),
 })
 
 export type ClientEnv = z.infer<typeof clientEnvSchema>;

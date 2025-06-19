@@ -1,24 +1,22 @@
-import React from 'react';
-import { CropperRef, Cropper } from 'react-advanced-cropper';
-import 'react-advanced-cropper/dist/style.css';
-import { useUploadMedia } from '@justaname.id/react';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { ImagePlusIcon } from '@/lib/icons';
 import { clientEnv } from '@/utils/config/clientEnv';
+import { useUploadMedia } from '@justaname.id/react';
+import React from 'react';
+import { Cropper, CropperRef } from 'react-advanced-cropper';
+import 'react-advanced-cropper/dist/style.css';
 
 export interface BannerEditorDialogProps {
     onImageChange: (image: string) => void;
     banner: string;
     subname: string;
-    disableOverlay?: boolean;
 }
 
 export const BannerEditorDialog: React.FC<BannerEditorDialogProps> = ({
     onImageChange,
     banner,
     subname,
-    disableOverlay,
 }) => {
     const [isEditorOpen, setIsEditorOpen] = React.useState(false);
     const [imageSrc, setImageSrc] = React.useState('');
@@ -111,18 +109,18 @@ export const BannerEditorDialog: React.FC<BannerEditorDialogProps> = ({
 
     return (
         <>
-            <div className="relative w-full h-32 rounded-lg overflow-hidden border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors cursor-pointer group" onClick={handleButtonClick}>
+            <div className="relative w-full h-[64px] rounded-[6px] shadow-md transition-colors cursor-pointer group" onClick={handleButtonClick}>
                 <img
                     src={banner}
-                    alt="profile-banner"
-                    className="w-full h-full object-cover"
+                    alt=""
+                    className="w-full max-h-[64px] object-cover rounded-lg"
                 />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute z-[10] inset-0 flex flex-row items-center gap-1 justify-center">
                     <ImagePlusIcon
-                        width={32}
-                        height={32}
-                        className="text-white"
+                        width={24}
+                        height={24}
                     />
+                    <p className='text-foreground font-bold text-xs'>Background</p>
                 </div>
                 <input
                     name='banner-selector-input'
@@ -141,7 +139,7 @@ export const BannerEditorDialog: React.FC<BannerEditorDialogProps> = ({
                 }}
             >
                 <div style={{ display: 'hidden' }}>
-                    <DialogTitle>Crop Banner</DialogTitle>
+                    <DialogTitle className='hidden'>Crop Banner</DialogTitle>
                 </div>
                 <DialogContent aria-describedby={undefined} className="w-full h-fit max-h-[600px]">
                     <div className="w-full h-fit pt-5">
@@ -149,7 +147,7 @@ export const BannerEditorDialog: React.FC<BannerEditorDialogProps> = ({
                             <Cropper
                                 ref={cropperRef}
                                 src={imageSrc}
-                                className="h-[400px] w-full"
+                                className="h-[300px] w-[300px]"
                                 stencilProps={{
                                     aspectRatio: 3,
                                 }}

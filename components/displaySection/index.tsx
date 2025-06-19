@@ -31,7 +31,7 @@ export const DisplaySection = ({ ens, className, records }: DisplaySectionProps)
         <div className={`flex flex-col max-w-[700px] min-[700px]:mx-auto h-full w-full justify-between items-center relative ${className}`}>
             {address && (
                 <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-                    <div className="text-[101px] text-center leading-[1] font-mono font-bold text-gray-400 opacity-10 break-all whitespace-normal">
+                    <div className="absolute inset-0 text-[101px] text-center leading-[1] font-mono font-bold text-gray-400 opacity-10 break-all whitespace-normal">
                         {address}
                     </div>
                 </div>

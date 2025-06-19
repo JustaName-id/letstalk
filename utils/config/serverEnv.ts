@@ -5,7 +5,7 @@ const SERVER_ENV = {
   justaNameDomain: process.env.JUSTANAME_DOMAIN,
   justaNameOrigin: process.env.JUSTANAME_ORIGIN,
   providerUrl: process.env.PROVIDER_URL,
-  devMode: process.env.DEV_MODE,
+  devMode: process.env.DEV === "true",
   justaNameApiKey: process.env.JUSTANAME_API_KEY,
   justaNameEnsDomain: process.env.JUSTANAME_ENS,
 

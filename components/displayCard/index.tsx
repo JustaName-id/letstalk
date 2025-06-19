@@ -26,7 +26,14 @@ export const DisplayCard = ({ subname, ens }: DisplayCardProps) => {
                 backgroundPosition: header ? "center, center top" : "center",
                 backgroundRepeat: header ? "no-repeat, no-repeat" : "no-repeat",
             }} className={`w-full border-[3px] border-[#E4E4E7] min-h-[520px] rounded-[12px] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.10),_0px_10px_10px_-5px_rgba(0,0,0,0.04)]`}>
-                <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal" >
+                <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal" containerClassName="min-h-[520px]" cardStyles={{
+                    front: {
+                        height: "520px"
+                    },
+                    back: {
+                        height: "520px"
+                    }
+                }} >
                     <FrontSection subname={subname} onFlip={() => setIsFlipped(!isFlipped)} ens={ens} />
                     <BackSection subname={subname} ens={ens} onFlip={() => setIsFlipped(!isFlipped)} />
                 </ReactCardFlip>

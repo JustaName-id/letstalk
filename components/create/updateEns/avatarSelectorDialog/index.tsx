@@ -1,34 +1,27 @@
-import React from 'react';
-import { CropperRef, Cropper } from 'react-advanced-cropper';
-import 'react-advanced-cropper/dist/style.css';
-import { useEnsAvatar, useUploadMedia } from '@justaname.id/react';
-import { ChainId } from '@justaname.id/sdk';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import { ImagePlusIcon } from '@/lib/icons';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { ImagePlusIcon } from '@/lib/icons';
 import { clientEnv } from '@/utils/config/clientEnv';
+import { useEnsAvatar, useUploadMedia } from '@justaname.id/react';
+import React from 'react';
+import { Cropper, CropperRef } from 'react-advanced-cropper';
+import 'react-advanced-cropper/dist/style.css';
 
 export interface AvatarEditorDialogProps {
     onImageChange: (image: string) => void;
     avatar?: string | null;
     subname: string;
-    chainId?: ChainId;
-    address?: `0x${string}`;
-    disableOverlay?: boolean;
 }
 
 export const AvatarEditorDialog: React.FC<AvatarEditorDialogProps> = ({
     onImageChange,
     avatar,
     subname,
-    address,
-    chainId,
-    disableOverlay,
 }) => {
     const { avatar: ensAvatar } = useEnsAvatar({
         ens: subname,
-        chainId: chainId,
+        chainId: clientEnv.chainId,
     });
     const [isEditorOpen, setIsEditorOpen] = React.useState(false);
     const [imageSrc, setImageSrc] = React.useState('');
@@ -129,7 +122,7 @@ export const AvatarEditorDialog: React.FC<AvatarEditorDialogProps> = ({
     return (
         <>
             <div className="flex flex-row justify-center items-center relative"
-                onClick={handleButtonClick}
+
             >
                 <input
                     name='image-selector-input'
@@ -140,18 +133,17 @@ export const AvatarEditorDialog: React.FC<AvatarEditorDialogProps> = ({
                     style={{ display: 'none' }}
                     ref={fileInputRef}
                 />
-                <Avatar className='cursor-pointer'>
-                    <AvatarImage src={avatar || ensAvatar} />
-                </Avatar>
-                <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                <Avatar onClick={handleButtonClick} className='shadow-md cursor-pointer relative w-16 h-16 rounded-full'>
+                    <AvatarImage src={avatar || ensAvatar} className='w-16 h-16 rounded-full' />
                     <ImagePlusIcon
-                        height={64}
-                        width={64}
+                        height={24}
+                        className="absolute left-[calc(50%-12px)] top-[calc(50%-12px)] flex items-center justify-center "
+                        width={24}
                         style={{
                             cursor: 'pointer',
                         }}
                     />
-                </div>
+                </Avatar>
             </div>
             <Dialog
                 open={isEditorOpen}

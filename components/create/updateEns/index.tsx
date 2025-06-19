@@ -1,59 +1,30 @@
-import { FormRecords } from "@/types/form";
+import { DiscordIcon, GithubIcon, GlobeIcon, TelegramIcon, XIcon } from "@/lib/icons";
+import { transformToKeyValuePairs, UpdateEnsFormData, updateEnsSchema } from "@/types/form";
 import { clientEnv } from "@/utils/config/clientEnv";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUpdateSubname } from "@justaname.id/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAccount, useDisconnect } from "wagmi";
-import { z } from "zod";
+import { useDisconnect } from "wagmi";
 import { Button } from "../../ui/button";
 import { Form } from "../../ui/form";
 import { FormInputField } from "../../ui/form-input-field";
-import { DiscordIcon, GithubIcon, GlobeIcon, TelegramIcon, XIcon } from "@/lib/icons";
 import { AvatarEditorDialog } from "./avatarSelectorDialog";
+import { BannerEditorDialog } from "./bannerSelectorDialog";
 
-const updateEnsSchema = z.object({
-    avatar: z.string().optional(),
-    header: z.string().optional(),
-    display: z.string().optional(),
-    description: z.string().optional(),
-    url: z.string().optional(),
-    github: z.string().optional(),
-    discord: z.string().optional(),
-    x: z.string().optional(),
-    telegram: z.string().optional(),
-});
+export interface UpdateEnsSectionProps {
+    subname: string;
+}
 
-type UpdateEnsFormData = z.infer<typeof updateEnsSchema>;
-
-const fieldToRecordKeyMap: Record<string, string> = {
-    github: "com.github",
-    discord: "com.discord",
-    x: "com.x",
-    telegram: "org.telegram",
-};
-
-const transformToKeyValuePairs = (data: UpdateEnsFormData): FormRecords => {
-    const records: FormRecords = [];
-
-    Object.entries(data).forEach(([fieldName, value]) => {
-        if (value && value.trim() !== "") {
-            const recordKey = fieldToRecordKeyMap[fieldName] || fieldName;
-            records.push({ key: recordKey, value: value.trim() });
-        }
-    });
-
-    return records;
-};
-
-export const UpdateEnsSection = () => {
+export const UpdateEnsSection = ({ subname }: { subname: string }) => {
     const { disconnect } = useDisconnect();
-    const { address } = useAccount();
     const { updateSubname, isUpdateSubnamePending } = useUpdateSubname({
         chainId: clientEnv.chainId,
     });
     const [avatar, setAvatar] = useState<string>("");
-    const [subname] = useState("example.cardeth.eth");
+    const [banner, setBanner] = useState<string>("");
+    const router = useRouter()
 
     const form = useForm<UpdateEnsFormData>({
         resolver: zodResolver(updateEnsSchema),
@@ -77,14 +48,27 @@ export const UpdateEnsSection = () => {
             records.push({ key: "avatar", value: avatar });
         }
 
-        // updateSubname({
-        //     subname,
-        //     records: records
-        // });
+        if (banner) {
+            records.push({ key: "header", value: banner });
+        }
+
+        updateSubname({
+            ens: subname,
+            chainId: clientEnv.chainId,
+            text: records,
+        }, {
+            onSuccess: () => {
+                router.push(`/${subname}`);
+            }
+        });
     };
 
     const handleAvatarChange = (imageUrl: string) => {
         setAvatar(imageUrl);
+    };
+
+    const handleBannerChange = (imageUrl: string) => {
+        setBanner(imageUrl);
     };
 
     return (
@@ -95,16 +79,18 @@ export const UpdateEnsSection = () => {
             </div>
 
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="flex h-full flex-col justify-start gap-5">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex h-full mt-10 flex-col justify-start gap-5">
                     <div className="flex flex-col gap-2.5">
-                        {/* Avatar Upload Section */}
                         <div className="flex flex-row w-full gap-2.5 items-center">
                             <AvatarEditorDialog
                                 onImageChange={handleAvatarChange}
                                 avatar={avatar}
                                 subname={subname}
-                                chainId={clientEnv.chainId}
-                                address={address}
+                            />
+                            <BannerEditorDialog
+                                onImageChange={handleBannerChange}
+                                banner={banner}
+                                subname={subname}
                             />
                         </div>
                         <div className="flex flex-col gap-2.5 w-full">
@@ -183,7 +169,7 @@ export const UpdateEnsSection = () => {
                             type="submit"
                             disabled={isUpdateSubnamePending}
                         >
-                            {isUpdateSubnamePending ? "Updating..." : "Update Profile"}
+                            {isUpdateSubnamePending ? "Creating..." : "Create Card!"}
                         </Button>
                     </div>
                 </form>
