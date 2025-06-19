@@ -44,15 +44,6 @@ export const AvatarEditorDialog: React.FC<AvatarEditorDialogProps> = ({
         }
     };
 
-    const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newZoomLevel = parseFloat(e.target.value);
-        const cropper = cropperRef.current;
-        if (cropper) {
-            const zoomRatio = newZoomLevel / 100;
-            // react-advanced-cropper uses different zoom API
-            cropper.zoomImage(zoomRatio);
-        }
-    };
 
     const handleSave = async () => {
         const cropper = cropperRef.current;
@@ -175,25 +166,6 @@ export const AvatarEditorDialog: React.FC<AvatarEditorDialogProps> = ({
                             />
                         )}
                     </div>
-                    {/* <div className='flex flex-row justify-between items-center gap-2.5'
-                        style={{
-                            width: '100%',
-                            marginBottom: '2px',
-                            marginTop: '10px',
-                            padding: '0px 2px',
-                        }}
-                    >
-                        <MinusIcon width={27} height={27} />
-                        <input
-                            name='slider-zoom-range-input'
-                            className={styles.sliderInput}
-                            min="1"
-                            max="100"
-                            type="range"
-                            onChange={handleSliderChange}
-                        />
-                        <AddIcon width={27} height={27} />
-                    </div> */}
                     <div className='flex flex-row gap-2.5'>
                         <Button
                             type="button"

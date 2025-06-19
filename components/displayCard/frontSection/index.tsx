@@ -43,7 +43,7 @@ export const FrontSection = ({ subname, onFlip, ens }: FrontSectionProps) => {
 
     return (
         <div onClick={onFlip} className="flex flex-col gap-5 p-7 h-full flex-1" >
-            <div className={`flex flex-col gap-5 h-full`}>
+            <div className={`flex flex-col gap-5`}>
                 <div className="flex flex-row py-2.5 w-full items-center gap-2.5">
                     <Avatar className="w-16 h-16 rounded-full">
                         <AvatarImage className="w-16 h-16 rounded-full" src={avatar} />

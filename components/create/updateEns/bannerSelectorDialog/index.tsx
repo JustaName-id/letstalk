@@ -39,15 +39,6 @@ export const BannerEditorDialog: React.FC<BannerEditorDialogProps> = ({
         }
     };
 
-    const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newZoomLevel = parseFloat(e.target.value);
-        const cropper = cropperRef.current;
-        if (cropper) {
-            const zoomRatio = newZoomLevel / 100;
-            cropper.zoomImage(zoomRatio);
-        }
-    };
-
     const handleSave = async () => {
         const cropper = cropperRef.current;
         if (cropper) {
@@ -158,23 +149,6 @@ export const BannerEditorDialog: React.FC<BannerEditorDialogProps> = ({
                             />
                         )}
                     </div>
-                    {/* Zoom slider - commented out but kept for potential future use */}
-                    {/* <div className='flex flex-row justify-between items-center gap-2.5 w-full mb-2 mt-4 px-2'>
-                        <button className="p-1">
-                            <MinusIcon width={20} height={20} />
-                        </button>
-                        <input
-                            name='slider-zoom-range-input'
-                            className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                            min="1"
-                            max="100"
-                            type="range"
-                            onChange={handleSliderChange}
-                        />
-                        <button className="p-1">
-                            <AddIcon width={20} height={20} />
-                        </button>
-                    </div> */}
                     <div className='flex flex-row gap-2.5 mt-4'>
                         <Button
                             type="button"

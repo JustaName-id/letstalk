@@ -29,7 +29,7 @@ export const BackSection = ({ subname, ens, onFlip }: BackSectionProps) => {
     })
 
     return (
-        <div onClick={onFlip} className="flex flex-col gap-5 p-7 h-full">
+        <div onClick={onFlip} className="flex flex-col gap-5 p-7 h-full justify-start">
             <QRCode style={{
                 background: "transparent",
                 borderRadius: "12px",

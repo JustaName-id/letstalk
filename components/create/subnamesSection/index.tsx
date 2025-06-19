@@ -42,7 +42,7 @@ export const SubnamesSection = ({ onSubnameClaim }: SubnamesSectionProps) => {
             return []
         }
         return [...accountSubnames, ...accountEnsNames]
-    }, [accountSubnames, accountEnsNames])
+    }, [accountSubnames, accountEnsNames, isAccountSubnamesPending, isAccountEnsNamesPending])
 
 
 
@@ -69,7 +69,7 @@ export const SubnamesSection = ({ onSubnameClaim }: SubnamesSectionProps) => {
             </div>
             <div className="flex flex-col h-full  justify-between">
                 <div className="flex flex-col gap-3 w-full">
-                    <p className="text-foreground text-xl font-normal leading-[100%]">Your Wallet's ENSs</p>
+                    <p className="text-foreground text-xl font-normal leading-[100%]">{`Your Wallet's ENSs`}</p>
                     <div className="flex flex-col gap-2.5 max-h-[48vh] overflow-y-auto w-full">
                         {allSubnames.map((subname) => (
                             <EnsCard key={subname.ens} records={subname} />

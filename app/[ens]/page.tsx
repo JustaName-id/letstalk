@@ -11,7 +11,7 @@ export default async function EnsPage({ params }: { params: Promise<{ ens: strin
     if (!initialRecords) {
         return (
             <div className="flex items-center justify-center h-full">
-                <p className="text-lg text-center text-muted-foreground">ENS name "{ens}" not found or has no records.</p>
+                <p className="text-lg text-center text-muted-foreground">ENS name: {ens} not found or has no records.</p>
             </div>
         );
     }
