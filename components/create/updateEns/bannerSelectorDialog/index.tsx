@@ -1,42 +1,32 @@
 import React from 'react';
 import { CropperRef, Cropper } from 'react-advanced-cropper';
 import 'react-advanced-cropper/dist/style.css';
-import { useEnsAvatar, useUploadMedia } from '@justaname.id/react';
-import { ChainId } from '@justaname.id/sdk';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import { ImagePlusIcon } from '@/lib/icons';
+import { useUploadMedia } from '@justaname.id/react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { ImagePlusIcon } from '@/lib/icons';
 import { clientEnv } from '@/utils/config/clientEnv';
 
-export interface AvatarEditorDialogProps {
+export interface BannerEditorDialogProps {
     onImageChange: (image: string) => void;
-    avatar?: string | null;
+    banner: string;
     subname: string;
-    chainId?: ChainId;
-    address?: `0x${string}`;
     disableOverlay?: boolean;
 }
 
-export const AvatarEditorDialog: React.FC<AvatarEditorDialogProps> = ({
+export const BannerEditorDialog: React.FC<BannerEditorDialogProps> = ({
     onImageChange,
-    avatar,
+    banner,
     subname,
-    address,
-    chainId,
     disableOverlay,
 }) => {
-    const { avatar: ensAvatar } = useEnsAvatar({
-        ens: subname,
-        chainId: chainId,
-    });
     const [isEditorOpen, setIsEditorOpen] = React.useState(false);
     const [imageSrc, setImageSrc] = React.useState('');
     const cropperRef = React.useRef<CropperRef>(null);
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const { uploadMedia, isUploadPending } = useUploadMedia({
         ens: subname,
-        type: 'Avatar',
+        type: 'Banner',
         chainId: clientEnv.chainId,
     });
 
@@ -56,7 +46,6 @@ export const AvatarEditorDialog: React.FC<AvatarEditorDialogProps> = ({
         const cropper = cropperRef.current;
         if (cropper) {
             const zoomRatio = newZoomLevel / 100;
-            // react-advanced-cropper uses different zoom API
             cropper.zoomImage(zoomRatio);
         }
     };
@@ -69,27 +58,21 @@ export const AvatarEditorDialog: React.FC<AvatarEditorDialogProps> = ({
                 canvas.toBlob(async (blob: Blob | null) => {
                     if (!blob) return;
                     if (blob.size > 3000000) {
-                        // Resize if too large
                         const resizedCanvas = document.createElement('canvas');
                         const resizedContext = resizedCanvas.getContext('2d');
                         if (!resizedContext) return;
-                        const MAX_SIZE = 1000;
-                        let width = canvas.width;
-                        let height = canvas.height;
+                        const MAX_WIDTH = 1500;
+                        const MAX_HEIGHT = 500;
+                        const width = canvas.width;
+                        const height = canvas.height;
                         if (width > height) {
-                            if (width > MAX_SIZE) {
-                                height *= MAX_SIZE / width;
-                                width = MAX_SIZE;
-                            }
+                            resizedCanvas.width = MAX_WIDTH;
+                            resizedCanvas.height = (MAX_WIDTH * height) / width;
                         } else {
-                            if (height > MAX_SIZE) {
-                                width *= MAX_SIZE / height;
-                                height = MAX_SIZE;
-                            }
+                            resizedCanvas.height = MAX_HEIGHT;
+                            resizedCanvas.width = (MAX_HEIGHT * width) / height;
                         }
-                        resizedCanvas.width = width;
-                        resizedCanvas.height = height;
-                        resizedContext.drawImage(canvas, 0, 0, width, height);
+                        resizedContext.drawImage(canvas, 0, 0, resizedCanvas.width, resizedCanvas.height);
                         resizedCanvas.toBlob(async (resizedBlob) => {
                             if (!resizedBlob) return;
                             const formData = new FormData();
@@ -128,81 +111,73 @@ export const AvatarEditorDialog: React.FC<AvatarEditorDialogProps> = ({
 
     return (
         <>
-            <div className="flex flex-row justify-center items-center relative"
-                onClick={handleButtonClick}
-            >
+            <div className="relative w-full h-32 rounded-lg overflow-hidden border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors cursor-pointer group" onClick={handleButtonClick}>
+                <img
+                    src={banner}
+                    alt="profile-banner"
+                    className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <ImagePlusIcon
+                        width={32}
+                        height={32}
+                        className="text-white"
+                    />
+                </div>
                 <input
-                    name='image-selector-input'
-                    id=''
+                    name='banner-selector-input'
                     type="file"
                     accept="image/jpeg, image/png, image/heic, image/heif, image/gif, image/avif"
                     onChange={handleImageChange}
                     style={{ display: 'none' }}
                     ref={fileInputRef}
                 />
-                <Avatar className='cursor-pointer'>
-                    <AvatarImage src={avatar || ensAvatar} />
-                </Avatar>
-                <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                    <ImagePlusIcon
-                        height={64}
-                        width={64}
-                        style={{
-                            cursor: 'pointer',
-                        }}
-                    />
-                </div>
             </div>
+
             <Dialog
                 open={isEditorOpen}
                 onOpenChange={(open: boolean) => {
                     setIsEditorOpen(open);
                 }}
             >
-                <div
-                    style={{
-                        display: 'hidden',
-                    }}
-                >
-                    <DialogTitle></DialogTitle>
+                <div style={{ display: 'hidden' }}>
+                    <DialogTitle>Crop Banner</DialogTitle>
                 </div>
-                <DialogContent aria-describedby={undefined} className="w-full h-fit max-h-[500px]">
+                <DialogContent aria-describedby={undefined} className="w-full h-fit max-h-[600px]">
                     <div className="w-full h-fit pt-5">
                         {imageSrc && (
                             <Cropper
                                 ref={cropperRef}
                                 src={imageSrc}
-                                className="h-[300px] w-[300px]"
+                                className="h-[400px] w-full"
                                 stencilProps={{
-                                    aspectRatio: 1,
+                                    aspectRatio: 3,
                                 }}
-                                backgroundClassName="bg-gray-100 !translate-x-[8px] !translate-y-[8px]"
+                                backgroundClassName="bg-gray-100"
                                 canvas={true}
                                 checkOrientation={false}
                                 transitions={true}
                             />
                         )}
                     </div>
-                    {/* <div className='flex flex-row justify-between items-center gap-2.5'
-                        style={{
-                            width: '100%',
-                            marginBottom: '2px',
-                            marginTop: '10px',
-                            padding: '0px 2px',
-                        }}
-                    >
-                        <MinusIcon width={27} height={27} />
+                    {/* Zoom slider - commented out but kept for potential future use */}
+                    {/* <div className='flex flex-row justify-between items-center gap-2.5 w-full mb-2 mt-4 px-2'>
+                        <button className="p-1">
+                            <MinusIcon width={20} height={20} />
+                        </button>
                         <input
                             name='slider-zoom-range-input'
-                            className={styles.sliderInput}
+                            className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                             min="1"
                             max="100"
                             type="range"
                             onChange={handleSliderChange}
                         />
-                        <AddIcon width={27} height={27} />
+                        <button className="p-1">
+                            <AddIcon width={20} height={20} />
+                        </button>
                     </div> */}
-                    <div className='flex flex-row gap-2.5'>
+                    <div className='flex flex-row gap-2.5 mt-4'>
                         <Button
                             type="button"
                             variant="secondary"
@@ -212,7 +187,7 @@ export const AvatarEditorDialog: React.FC<AvatarEditorDialogProps> = ({
                                 }
                                 setIsEditorOpen(false);
                             }}
-                            style={{ flexGrow: '0.5' }}
+                            className="flex-1"
                             disabled={isUploadPending}
                         >
                             Cancel
@@ -221,10 +196,10 @@ export const AvatarEditorDialog: React.FC<AvatarEditorDialogProps> = ({
                             type="button"
                             onClick={handleSave}
                             variant="default"
-                            style={{ flexGrow: '0.5' }}
+                            className="flex-1"
                             disabled={isUploadPending}
                         >
-                            Upload
+                            {isUploadPending ? "Uploading..." : "Upload"}
                         </Button>
                     </div>
                 </DialogContent>

@@ -18,7 +18,7 @@ export default function Home() {
         !isConnected ?
             <PreviewSection />
             :
-            !newSubname ?
+            !!newSubname ?
                 <SubnamesSection onSubnameClaim={onSubnameClaim} />
                 :
                 <UpdateEnsSection />

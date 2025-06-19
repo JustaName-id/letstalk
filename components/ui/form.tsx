@@ -80,7 +80,7 @@ function FormItem({ className, ...props }: React.ComponentProps<"div">) {
         <FormItemContext.Provider value={{ id }}>
             <div
                 data-slot="form-item"
-                className={cn("grid gap-2", className)}
+                className={cn("flex w-full", className)}
                 {...props}
             />
         </FormItemContext.Provider>
@@ -116,6 +116,7 @@ function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
                     ? `${formDescriptionId}`
                     : `${formDescriptionId} ${formMessageId}`
             }
+            className="w-full flex"
             aria-invalid={!!error}
             {...props}
         />

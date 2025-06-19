@@ -31,6 +31,10 @@ const justaNameConfig: JustaNameProviderConfig = {
         providerUrl: clientEnv.providerUrl
     }],
     dev: clientEnv.devMode,
+    config: {
+        origin: clientEnv.justaNameOrigin,
+        domain: clientEnv.justaNameDomain,
+    }
 };
 
 const queryClient = new QueryClient();
