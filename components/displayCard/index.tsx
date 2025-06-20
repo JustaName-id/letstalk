@@ -19,7 +19,7 @@ export const DisplayCard = ({ subname, ens, isCardFlipped }: DisplayCardProps) =
 
     return (
         <div className="flex flex-col px-[5%] gap-5 items-center w-full overflow-hidden">
-            <div className={`w-full min-h-[480px] relative overflow-hidden`}>
+            <div className={`w-full min-h-[480px] py-[40px] relative overflow-hidden`}>
                 <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal" containerClassName="min-h-[480px] relative !z-[2]" cardStyles={{
                     front: {
                         height: "480px"

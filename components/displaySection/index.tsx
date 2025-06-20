@@ -43,7 +43,7 @@ export const DisplaySection = ({ ens, className, records }: DisplaySectionProps)
 
 
     return (
-        <div onClick={() => setIsCardFlipped(!isCardFlipped)} className={`flex flex-col w-full max-w-[700px] min-[700px]:mx-auto h-[calc(100vh-40px)] justify-between items-center relative overflow-hidden ${className}`}>
+        <div onClick={() => setIsCardFlipped(!isCardFlipped)} className={`flex flex-col w-full h-full max-md:h-[calc(100vh-40px)] max-w-[700px] min-[700px]:mx-auto justify-between items-center relative overflow-hidden ${className}`}>
             {address && (
                 <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
                     <div className="absolute inset-0 text-[99px] text-center leading-[90%] font-mono font-bold text-gray-400 opacity-10 break-all overflow-hidden">

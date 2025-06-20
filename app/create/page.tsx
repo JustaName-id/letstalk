@@ -28,7 +28,7 @@ export default function Home() {
     }
 
     return (
-        <div className="w-full h-[calc(100vh-40px)]">
+        <div className="w-full ">
             {
                 !isConnected ?
                     <PreviewSection />
