@@ -10,9 +10,11 @@ export interface BackSectionProps {
     subname: SanitizedRecords;
     ens: string;
     onFlip: () => void;
+    display?: boolean;
+
 }
 
-export const BackSection = ({ subname, ens, onFlip }: BackSectionProps) => {
+export const BackSection = ({ subname, ens, onFlip, display }: BackSectionProps) => {
 
     const [copied, setCopied] = useState(false);
     const header = useMemo(() => {
@@ -47,7 +49,7 @@ export const BackSection = ({ subname, ens, onFlip }: BackSectionProps) => {
             backgroundPosition: header ? "center, center top" : "center",
             backgroundRepeat: header ? "no-repeat, no-repeat" : "no-repeat",
             backgroundColor: "#FFF",
-        }} onClick={onFlip} className="flex flex-col relative gap-5 p-6 h-full justify-start border-[3px] border-[#E4E4E7]  rounded-[12px] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.10),_0px_10px_10px_-5px_rgba(0,0,0,0.04)]">
+        }} onClick={onFlip} className={`flex flex-col relative h-full justify-start border-[3px] border-[#E4E4E7]  rounded-[12px] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.10),_0px_10px_10px_-5px_rgba(0,0,0,0.04)] ${display ? "p-3 gap-2" : "p-6 gap-5"}`}>
             <div className="absolute inset-0 z-[1] bg-gradient-to-t h-[60px] top-[80px] from-white from-[40%] to-transparent" />
             <QRCode style={{
                 background: "transparent",

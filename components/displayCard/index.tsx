@@ -30,7 +30,7 @@ export const DisplayCard = ({ subname, ens, isCardFlipped, display }: DisplayCar
                     }
                 }} >
                     <FrontSection display={display} subname={subname} onFlip={() => setIsFlipped(!isFlipped)} ens={ens} />
-                    <BackSection subname={subname} ens={ens} onFlip={() => setIsFlipped(!isFlipped)} />
+                    <BackSection display={display} subname={subname} ens={ens} onFlip={() => setIsFlipped(!isFlipped)} />
                 </ReactCardFlip>
             </div>
         </div>
