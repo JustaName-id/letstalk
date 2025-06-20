@@ -6,10 +6,11 @@ export interface SocialCardProps {
     name: string;
     value: string;
     horizontal?: boolean;
+    display?: boolean;
     className?: string;
 }
 
-export const SocialCard = ({ name, value, horizontal = false, className }: SocialCardProps) => {
+export const SocialCard = ({ name, value, horizontal = false, className, display }: SocialCardProps) => {
 
     const Icon = useMemo(() => {
         switch (name) {
@@ -52,7 +53,7 @@ export const SocialCard = ({ name, value, horizontal = false, className }: Socia
             target="_blank"
             href={url}
             onClick={handleClick}
-            className={`flex flex-col p-4 pointer-events-auto gap-2 cursor-pointer ${horizontal ? "flex-row" : "flex-col"} bg-sidebar-background rounded-[6px] ${className}`}
+            className={`flex flex-col ${display ? "p-2" : "p-4"} pointer-events-auto gap-2 cursor-pointer ${horizontal ? "flex-row" : "flex-col"} bg-sidebar-background rounded-[6px] ${className}`}
         >
             {Icon}
             <div className="flex flex-col gap-0.5 text-secondary-foreground">

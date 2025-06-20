@@ -100,7 +100,7 @@ export const UpdateEnsSection = ({ subname, initialRecords }: UpdateEnsSectionPr
     };
 
     return (
-        <div className="flex flex-col w-full h-full gap-6">
+        <div className="flex flex-col w-full p-5 h-full gap-6">
             <div className="flex flex-col gap-2.5">
                 <h1 className="text-foreground text-[30px] font-normal leading-[100%]">Update Your ENS Profile</h1>
                 <p className="text-xs text-muted-foreground font-normal leading-[133%]">Fill in your profile information to create your ENS business card.</p>

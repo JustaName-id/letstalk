@@ -9,9 +9,10 @@ export interface FrontSectionProps {
     subname: SanitizedRecords;
     onFlip: () => void;
     ens: string;
+    display?: boolean;
 }
 
-export const FrontSection = ({ subname, onFlip, ens }: FrontSectionProps) => {
+export const FrontSection = ({ subname, onFlip, ens, display }: FrontSectionProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
     const displayText = subname.display ?? ens;
@@ -83,11 +84,11 @@ export const FrontSection = ({ subname, onFlip, ens }: FrontSectionProps) => {
                 <p className="text-xs font-normal text-muted-foreground leading-[133%]">{subname.description}</p>
             </div>
             <div className="grid grid-cols-2 gap-2.5 gap-y-2.5">
-                {website && <SocialCard name="Website" value={website} horizontal className="col-span-2" />}
-                {telegram && <SocialCard name="Telegram" value={telegram} className="col-span-1" />}
-                {x && <SocialCard name="X/Twitter" value={x} className="col-span-1" />}
-                {github && <SocialCard name="Github" value={github} className="col-span-1" />}
-                {discord && <SocialCard name="Discord" value={discord} className="col-span-1" />}
+                {website && <SocialCard display={display} name="Website" value={website} horizontal className="col-span-2" />}
+                {telegram && <SocialCard display={display} name="Telegram" value={telegram} className="col-span-1" />}
+                {x && <SocialCard display={display} name="X/Twitter" value={x} className="col-span-1" />}
+                {github && <SocialCard display={display} name="Github" value={github} className="col-span-1" />}
+                {discord && <SocialCard display={display} name="Discord" value={discord} className="col-span-1" />}
             </div>
         </div >
     )

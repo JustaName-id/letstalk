@@ -8,9 +8,10 @@ export interface DisplayCardProps {
     subname: SanitizedRecords;
     ens: string;
     isCardFlipped?: boolean;
+    display?: boolean;
 }
 
-export const DisplayCard = ({ subname, ens, isCardFlipped }: DisplayCardProps) => {
+export const DisplayCard = ({ subname, ens, isCardFlipped, display }: DisplayCardProps) => {
     const [isFlipped, setIsFlipped] = useState(isCardFlipped ?? false);
 
     useEffect(() => {
@@ -18,21 +19,20 @@ export const DisplayCard = ({ subname, ens, isCardFlipped }: DisplayCardProps) =
     }, [isCardFlipped])
 
     return (
-        <div className="flex flex-col px-[5%] gap-5 items-center w-full overflow-hidden">
-            <div className={`w-full min-h-[480px] py-[40px] relative overflow-hidden`}>
-                <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal" containerClassName="min-h-[480px] relative !z-[2]" cardStyles={{
+        <div className="flex flex-col px-[5%] gap-5 items-center w-full overflow-hidden justify-start relative">
+            <div className={`w-full ${display ? "min-h-[400px]" : "min-h-[480px]"} py-[40px] relative overflow-hidden`}>
+                <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal" containerClassName={`${display ? "min-h-[400px]" : "min-h-[480px]"} relative !z-[2]`} cardStyles={{
                     front: {
-                        height: "480px"
+                        height: display ? "400px" : "480px"
                     },
                     back: {
-                        height: "480px"
+                        height: display ? "400px" : "480px"
                     }
                 }} >
-                    <FrontSection subname={subname} onFlip={() => setIsFlipped(!isFlipped)} ens={ens} />
+                    <FrontSection display={display} subname={subname} onFlip={() => setIsFlipped(!isFlipped)} ens={ens} />
                     <BackSection subname={subname} ens={ens} onFlip={() => setIsFlipped(!isFlipped)} />
                 </ReactCardFlip>
             </div>
-            <p className="text-base text-gray-500 from-gradient-1-start bg-clip-text">Click to flip Card</p>
         </div>
     );
 };

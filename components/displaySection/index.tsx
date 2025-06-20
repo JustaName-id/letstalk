@@ -11,9 +11,10 @@ export interface DisplaySectionProps {
     ens: string;
     className?: string;
     records: SanitizedRecords;
+    display?: boolean;
 }
 
-export const DisplaySection = ({ ens, className, records }: DisplaySectionProps) => {
+export const DisplaySection = ({ ens, className, records, display }: DisplaySectionProps) => {
     const address = useMemo(() => {
         return records?.ethAddress?.value
     }, [records])
@@ -43,7 +44,7 @@ export const DisplaySection = ({ ens, className, records }: DisplaySectionProps)
 
 
     return (
-        <div onClick={() => setIsCardFlipped(!isCardFlipped)} className={`flex flex-col w-full h-full max-md:h-[calc(100vh-40px)] max-w-[700px] min-[700px]:mx-auto justify-between items-center relative overflow-hidden ${className}`}>
+        <div onClick={() => setIsCardFlipped(!isCardFlipped)} className={`flex flex-col h-[calc(100dvh-40px)] p-5 max-w-[700px] min-[700px]:mx-auto justify-start items-center relative  ${className}`}>
             {address && (
                 <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
                     <div className="absolute inset-0 text-[99px] text-center leading-[90%] font-mono font-bold text-gray-400 opacity-10 break-all overflow-hidden">
@@ -70,12 +71,10 @@ export const DisplaySection = ({ ens, className, records }: DisplaySectionProps)
             </div>
             {records && (
                 <div className="relative z-10 w-full">
-                    <DisplayCard subname={records} ens={ens} isCardFlipped={isCardFlipped} />
+                    <DisplayCard display={display} subname={records} ens={ens} isCardFlipped={isCardFlipped} />
                 </div>
             )}
-            <div className="relative z-10">
-
-            </div>
+            <p className="text-base text-gray-500 from-gradient-1-start bg-clip-text">Click to flip Card</p>
         </div>
     );
 }

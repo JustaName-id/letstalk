@@ -42,7 +42,11 @@ export const SubnamesSection = ({ onSubnameClaim, onEnsSelect }: SubnamesSection
         if (isAccountSubnamesPending || isAccountEnsNamesPending) {
             return []
         }
-        return [...accountSubnames, ...accountEnsNames]
+        const combined = [...accountSubnames, ...accountEnsNames];
+        const uniqueSubnames = combined.filter((subname, index, array) =>
+            array.findIndex(item => item.ens === subname.ens) === index
+        );
+        return uniqueSubnames;
     }, [accountSubnames, accountEnsNames, isAccountSubnamesPending, isAccountEnsNamesPending])
 
 
@@ -61,9 +65,8 @@ export const SubnamesSection = ({ onSubnameClaim, onEnsSelect }: SubnamesSection
         });
     }
 
-
     return (
-        <div className="flex flex-1 flex-col  h-full w-full gap-8">
+        <div className="flex flex-1 flex-col p-5 h-full w-full gap-8">
             <div className="flex flex-col gap-2.5">
                 <h1 className="text-foreground text-[30px] font-normal leading-[100%]">Choose an ENS or Claim a Free cardEth Name!</h1>
                 <p className="text-xs text-muted-foreground font-normal leading-[133%]">Lorem ipsum dolor sit amet consectetur. Aliquet vivamus ligula elementum lorem penatibus pretium.</p>
@@ -84,7 +87,6 @@ export const SubnamesSection = ({ onSubnameClaim, onEnsSelect }: SubnamesSection
                         <Button variant={"default"} disabled={isSubnameAvailablePending || !isSubnameAvailable?.isAvailable || isAddSubnamePending} onClick={handleClaim}>{isAddSubnamePending ? "Claiming..." : "Claim"}</Button>
                     </div>
                     <p className="text-xs text-muted-foreground font-normal leading-[133%]">Lorem ipsum dolor sit amet consectetur. Aliquet vivamus ligula elementum lorem penatibus pretium.</p>
-
                 </div>
                 <div className="flex flex-row gap-[15px] justify-between items-center w-full">
                     <Button variant={"secondary"} onClick={() => disconnect()}>Disconnect</Button>
