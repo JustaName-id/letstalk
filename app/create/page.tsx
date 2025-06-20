@@ -28,12 +28,16 @@ export default function Home() {
     }
 
     return (
-        !isConnected ?
-            <PreviewSection />
-            :
-            !newSubname && !ens ?
-                <SubnamesSection onEnsSelect={onEnsSelect} onSubnameClaim={onSubnameClaim} />
-                :
-                <UpdateEnsSection subname={!!newSubname ? newSubname : ens} initialRecords={records?.sanitizedRecords} />
+        <div className="w-full h-[calc(100vh-40px)]">
+            {
+                !isConnected ?
+                    <PreviewSection />
+                    :
+                    !newSubname && !ens ?
+                        <SubnamesSection onEnsSelect={onEnsSelect} onSubnameClaim={onSubnameClaim} />
+                        :
+                        <UpdateEnsSection subname={!!newSubname ? newSubname : ens} initialRecords={records?.sanitizedRecords} />
+            }
+        </div>
     );
 }

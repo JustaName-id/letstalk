@@ -63,7 +63,7 @@ export const SubnamesSection = ({ onSubnameClaim, onEnsSelect }: SubnamesSection
 
 
     return (
-        <div className="flex flex-col w-full gap-8">
+        <div className="flex flex-1 flex-col  h-full w-full gap-8">
             <div className="flex flex-col gap-2.5">
                 <h1 className="text-foreground text-[30px] font-normal leading-[100%]">Choose an ENS or Claim a Free cardEth Name!</h1>
                 <p className="text-xs text-muted-foreground font-normal leading-[133%]">Lorem ipsum dolor sit amet consectetur. Aliquet vivamus ligula elementum lorem penatibus pretium.</p>

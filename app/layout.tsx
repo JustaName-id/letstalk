@@ -19,12 +19,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <body
-        className={`${inter.variable} antialiased`}
+        className={`${inter.variable} antialiased overflow-x-hidden`}
       >
         <Providers>
-          <main className="w-full min-h-[100vh] flex p-5">
+          <main className="w-full h-full p-5 min-h-screen overflow-x-hidden">
             {children}
           </main>
         </Providers>

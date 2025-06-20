@@ -9,12 +9,12 @@ export default async function HomePage() {
 
   if (!initialRecords) {
     return (
-      <div className="flex items-center flex-1 justify-center h-[calc(100vh-40px)]">
+      <div className="flex items-center flex-1 justify-center">
         <p className="text-lg text-center text-muted-foreground">ENS name nick.eth not found or has no records.</p>
       </div>
     );
   }
   return (
-    <DisplaySection ens={"nick.eth"} className="!h-[calc(100vh-40px)]" records={initialRecords} />
+    <DisplaySection ens={"nick.eth"} records={initialRecords} />
   );
 } 

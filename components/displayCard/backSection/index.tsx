@@ -47,12 +47,12 @@ export const BackSection = ({ subname, ens, onFlip }: BackSectionProps) => {
             backgroundPosition: header ? "center, center top" : "center",
             backgroundRepeat: header ? "no-repeat, no-repeat" : "no-repeat",
             backgroundColor: "#FFF",
-        }} onClick={onFlip} className="flex flex-col relative gap-5 p-7 h-full justify-start border-[3px] border-[#E4E4E7]  rounded-[12px] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.10),_0px_10px_10px_-5px_rgba(0,0,0,0.04)]">
-            <div className="absolute inset-0 z-[1] bg-gradient-to-t h-[60px] top-[75px] from-white to-transparent" />
+        }} onClick={onFlip} className="flex flex-col relative gap-5 p-6 h-full justify-start border-[3px] border-[#E4E4E7]  rounded-[12px] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.10),_0px_10px_10px_-5px_rgba(0,0,0,0.04)]">
+            <div className="absolute inset-0 z-[1] bg-gradient-to-t h-[60px] top-[80px] from-white from-[40%] to-transparent" />
             <QRCode style={{
                 background: "transparent",
                 borderRadius: "12px",
-            }} value={qrCodeContent} className="w-full z-[2] h-full bg-transparent" />
+            }} value={qrCodeContent} className="w-full z-[2] h-full bg-transparent scale-90" />
             <div className="flex flex-row py-2.5 gap-2.5 items-center">
                 <Avatar className="w-16 h-16 rounded-full">
                     <AvatarImage className="w-16 h-16 rounded-full" src={avatar} />
@@ -60,10 +60,10 @@ export const BackSection = ({ subname, ens, onFlip }: BackSectionProps) => {
                         {subname.display?.charAt(0)}
                     </AvatarFallback>
                 </Avatar>
-                <div className="flex flex-col text-foreground gap-1 ">
+                <div className="flex flex-col text-foreground gap-1 overflow-x-hidden max-w-[70%]">
                     <p className="text-xl font-normal leading-[140%] ">{ens}</p>
-                    <div className="flex flex-row gap-1 items-center ">
-                        <p className="text-xs leading-[130%] font-bold text-ellipsis overflow-hidden whitespace-nowrap max-w-[55%]">{subname.ethAddress.value}</p>
+                    <div className="flex flex-row gap-1 items-center">
+                        <p className="text-xs leading-[130%] font-bold text-ellipsis overflow-hidden whitespace-nowrap w-full">{subname.ethAddress.value}</p>
                         {copied ? <CopiedIcon className="w-4 h-4" /> : <CopyIcon onClick={handleCopy} className="w-4 h-4" />}
                     </div>
                 </div>

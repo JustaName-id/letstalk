@@ -10,12 +10,12 @@ export default async function EnsPage({ params }: { params: Promise<{ ens: strin
 
     if (!initialRecords) {
         return (
-            <div className="flex items-center justify-center h-full">
+            <div className="flex w-full items-center justify-center h-full">
                 <p className="text-lg text-center text-muted-foreground">ENS name: {ens} not found or has no records.</p>
             </div>
         );
     }
     return (
-        <DisplaySection ens={decodeURIComponent(ens)} className="min-h-[calc(100vh-40px)] h-full" records={initialRecords} />
+        <DisplaySection ens={decodeURIComponent(ens)} records={initialRecords} />
     );
 } 
