@@ -1,4 +1,3 @@
-import { serverEnv } from "@/utils/config/serverEnv";
 import { SanitizedRecords, sanitizeRecords } from "@justaname.id/sdk";
 import { normalize } from 'viem/ens';
 import { getJustaname } from "./justaname";
@@ -8,8 +7,8 @@ export async function getEnsRecords(ens: string): Promise<SanitizedRecords | nul
     const justaName = getJustaname()
 
     const records = await justaName.subnames.getRecords({
-        ens: normalize(ens),
-        chainId: serverEnv.chainId,
+        ens: normalize(decodeURIComponent(ens)),
+        // chainId: serverEnv.chainId,
     });
     return sanitizeRecords(records);
     

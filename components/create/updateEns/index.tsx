@@ -3,8 +3,9 @@ import { transformToKeyValuePairs, UpdateEnsFormData, updateEnsSchema } from "@/
 import { clientEnv } from "@/utils/config/clientEnv";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUpdateSubname } from "@justaname.id/react";
+import { SanitizedRecords } from "@justaname.id/sdk";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useDisconnect } from "wagmi";
 import { Button } from "../../ui/button";
@@ -15,30 +16,57 @@ import { BannerEditorDialog } from "./bannerSelectorDialog";
 
 export interface UpdateEnsSectionProps {
     subname: string;
+    initialRecords?: SanitizedRecords | null;
 }
 
-export const UpdateEnsSection = ({ subname }: { subname: string }) => {
+export const UpdateEnsSection = ({ subname, initialRecords }: UpdateEnsSectionProps) => {
     const { disconnect } = useDisconnect();
     const { updateSubname, isUpdateSubnamePending } = useUpdateSubname({
         chainId: clientEnv.chainId,
     });
-    const [avatar, setAvatar] = useState<string>("");
-    const [banner, setBanner] = useState<string>("");
+
+    // Extract initial values from records
+    const initialValues = useMemo(() => {
+        if (!initialRecords) {
+            return {
+                avatar: "",
+                header: "",
+                display: "",
+                description: "",
+                url: "",
+                github: "",
+                discord: "",
+                x: "",
+                telegram: "",
+            };
+        }
+
+        const github = initialRecords.socials.find((social) => social.name === "Github")?.value || "";
+        const discord = initialRecords.socials.find((social) => social.name === "Discord")?.value || "";
+        const x = initialRecords.socials.find((social) => social.name === "X")?.value ||
+            initialRecords.socials.find((social) => social.name === "Twitter")?.value || "";
+        const telegram = initialRecords.socials.find((social) => social.name === "Telegram")?.value || "";
+
+        return {
+            avatar: initialRecords.avatar || "",
+            header: initialRecords.header || initialRecords.banner || "",
+            display: initialRecords.display || "",
+            description: initialRecords.description || "",
+            url: initialRecords.url || "",
+            github,
+            discord,
+            x,
+            telegram,
+        };
+    }, [initialRecords]);
+
+    const [avatar, setAvatar] = useState<string>(initialValues.avatar);
+    const [banner, setBanner] = useState<string>(initialValues.header);
     const router = useRouter()
 
     const form = useForm<UpdateEnsFormData>({
         resolver: zodResolver(updateEnsSchema),
-        defaultValues: {
-            avatar: "",
-            header: "",
-            display: "",
-            description: "",
-            url: "",
-            github: "",
-            discord: "",
-            x: "",
-            telegram: "",
-        },
+        defaultValues: initialValues,
     });
 
     const onSubmit = (data: UpdateEnsFormData) => {
@@ -119,14 +147,15 @@ export const UpdateEnsSection = ({ subname }: { subname: string }) => {
                             />
                         </div>
                         <div className="flex flex-row gap-2 w-full items-center">
-                            <GithubIcon width={24} height={24} />
+                            <TelegramIcon width={24} height={24} />
                             <FormInputField
                                 className="w-full"
                                 control={form.control}
-                                name="github"
+                                name="telegram"
                                 placeholder="username"
                             />
                         </div>
+
                         <div className="flex flex-row gap-2 w-full items-center">
                             <XIcon width={24} height={24} />
                             <FormInputField
@@ -137,20 +166,20 @@ export const UpdateEnsSection = ({ subname }: { subname: string }) => {
                             />
                         </div>
                         <div className="flex flex-row gap-2 w-full items-center">
+                            <GithubIcon width={24} height={24} />
+                            <FormInputField
+                                className="w-full"
+                                control={form.control}
+                                name="github"
+                                placeholder="username"
+                            />
+                        </div>
+                        <div className="flex flex-row gap-2 w-full items-center">
                             <DiscordIcon width={24} height={24} />
                             <FormInputField
                                 className="w-full"
                                 control={form.control}
                                 name="discord"
-                                placeholder="username"
-                            />
-                        </div>
-                        <div className="flex flex-row gap-2 w-full items-center">
-                            <TelegramIcon width={24} height={24} />
-                            <FormInputField
-                                className="w-full"
-                                control={form.control}
-                                name="telegram"
                                 placeholder="username"
                             />
                         </div>
@@ -169,7 +198,7 @@ export const UpdateEnsSection = ({ subname }: { subname: string }) => {
                             type="submit"
                             disabled={isUpdateSubnamePending}
                         >
-                            {isUpdateSubnamePending ? "Creating..." : "Create Card!"}
+                            {isUpdateSubnamePending ? "Creating..." : "Save Card!"}
                         </Button>
                     </div>
                 </form>

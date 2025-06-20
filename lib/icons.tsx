@@ -96,3 +96,19 @@ export const ImagePlusIcon = (props: React.SVGProps<SVGSVGElement>) => {
         </svg>
     )
 }
+
+export const CopiedIcon = (props: React.SVGProps<SVGSVGElement>) => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
+            <path d="M12 15L14 17L18 13M4 16C2.9 16 2 15.1 2 14V4C2 2.9 2.9 2 4 2H14C15.1 2 16 2.9 16 4M10 8H20C21.1046 8 22 8.89543 22 10V20C22 21.1046 21.1046 22 20 22H10C8.89543 22 8 21.1046 8 20V10C8 8.89543 8.89543 8 10 8Z" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    )
+}
+
+export const EditIcon = (props: React.SVGProps<SVGSVGElement>) => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" {...props}>
+            <path d="M8.00008 13.3333H14.0001M10.9174 2.41465C11.1828 2.14926 11.5427 2.00016 11.9181 2.00016C12.2934 2.00016 12.6533 2.14926 12.9187 2.41465C13.1841 2.68005 13.3332 3.04 13.3332 3.41532C13.3332 3.79064 13.1841 4.15059 12.9187 4.41599L4.91207 12.4233C4.75346 12.5819 4.55741 12.6979 4.34207 12.7607L2.4274 13.3193C2.37003 13.336 2.30923 13.3371 2.25134 13.3222C2.19345 13.3074 2.14062 13.2773 2.09836 13.235C2.05611 13.1928 2.02599 13.1399 2.01116 13.082C1.99633 13.0242 1.99733 12.9633 2.01407 12.906L2.57273 10.9913C2.63555 10.7762 2.75156 10.5804 2.91007 10.422L10.9174 2.41465Z" stroke="#18181B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    )
+}

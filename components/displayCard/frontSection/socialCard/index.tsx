@@ -57,7 +57,7 @@ export const SocialCard = ({ name, value, horizontal = false, className }: Socia
             {Icon}
             <div className="flex flex-col gap-0.5 text-secondary-foreground">
                 <p className="text-xs font-bold leading-[100%] ">{name}</p>
-                <p className="text-sm font-normal leading-[150%]">{value}</p>
+                <p className="text-sm font-normal leading-[150%] text-ellipsis overflow-hidden whitespace-nowrap max-w-[55vw]">{value}</p>
             </div>
         </Link>
     )

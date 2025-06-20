@@ -1,5 +1,5 @@
 import { SanitizedRecords } from "@justaname.id/sdk";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import ReactCardFlip from "react-card-flip";
 import { BackSection } from "./backSection";
 import { FrontSection } from "./frontSection";
@@ -12,21 +12,10 @@ export interface DisplayCardProps {
 export const DisplayCard = ({ subname, ens }: DisplayCardProps) => {
     const [isFlipped, setIsFlipped] = useState(false);
 
-    const header = useMemo(() => {
-        return subname.header ?? subname.banner
-    }, [subname])
-
     return (
         <div className="flex flex-col gap-5 items-center w-full">
-            <div style={{
-                background: header
-                    ? `linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 25%, rgba(255,255,255,1) 35%), url(${header})`
-                    : "none",
-                backgroundSize: header ? "cover, cover" : "auto",
-                backgroundPosition: header ? "center, center top" : "center",
-                backgroundRepeat: header ? "no-repeat, no-repeat" : "no-repeat",
-            }} className={`w-full border-[3px] border-[#E4E4E7] min-h-[520px] rounded-[12px] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.10),_0px_10px_10px_-5px_rgba(0,0,0,0.04)]`}>
-                <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal" containerClassName="min-h-[520px]" cardStyles={{
+            <div className={`w-full min-h-[520px]  relative `}>
+                <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal" containerClassName="min-h-[520px] relative !z-[2]" cardStyles={{
                     front: {
                         height: "520px"
                     },

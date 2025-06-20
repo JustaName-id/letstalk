@@ -25,6 +25,7 @@ const config = getDefaultConfig({
     ssr: true,
 });
 
+
 const justaNameConfig: JustaNameProviderConfig = {
     networks: [{
         chainId: clientEnv.chainId,

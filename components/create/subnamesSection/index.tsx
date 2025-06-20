@@ -8,9 +8,10 @@ import { EnsCard } from "./ensCard";
 
 export interface SubnamesSectionProps {
     onSubnameClaim: (subname: string) => void;
+    onEnsSelect: (ens: string) => void;
 }
 
-export const SubnamesSection = ({ onSubnameClaim }: SubnamesSectionProps) => {
+export const SubnamesSection = ({ onSubnameClaim, onEnsSelect }: SubnamesSectionProps) => {
     const { disconnect } = useDisconnect();
     const { address } = useAccount();
     const [username, setUsername] = useState("");
@@ -72,12 +73,12 @@ export const SubnamesSection = ({ onSubnameClaim }: SubnamesSectionProps) => {
                     <p className="text-foreground text-xl font-normal leading-[100%]">{`Your Wallet's ENSs`}</p>
                     <div className="flex flex-col gap-2.5 max-h-[48vh] overflow-y-auto w-full">
                         {allSubnames.map((subname) => (
-                            <EnsCard key={subname.ens} records={subname} />
+                            <EnsCard key={subname.ens} records={subname} onEnsSelect={onEnsSelect} />
                         ))}
                     </div>
                 </div>
                 <div className="flex flex-col gap-4">
-                    <p className="text-foreground text-xl font-normal leading-[100%]">Claim a Subname</p>
+                    <p className="text-foreground text-xl font-semibold leading-[100%]">Claim a Subname</p>
                     <div className="flex flex-row gap-2 justify-between">
                         <Input placeholder="Enter a subname" disabled={isAddSubnamePending} className="w-full" rightText={`.${clientEnv.justaNameEns}`} containerClassName="w-full" value={username} onChange={(e) => setUsername(e.target.value)} />
                         <Button variant={"default"} disabled={isSubnameAvailablePending || !isSubnameAvailable?.isAvailable || isAddSubnamePending} onClick={handleClaim}>{isAddSubnamePending ? "Claiming..." : "Claim"}</Button>
