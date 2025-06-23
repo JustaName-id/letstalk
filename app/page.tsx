@@ -1,4 +1,5 @@
 import { DisplaySection } from "@/components/displaySection";
+import { getEfpStats } from "@/lib/efp";
 import { getEnsRecords } from "@/lib/ens";
 
 export default async function HomePage() {
@@ -6,6 +7,7 @@ export default async function HomePage() {
   const displayEns = "ens.eth";
 
   const records = await getEnsRecords(displayEns);
+  const efpStats = await getEfpStats(displayEns);
 
   const initialRecords = records;
 
@@ -17,6 +19,6 @@ export default async function HomePage() {
     );
   }
   return (
-    <DisplaySection ens={displayEns} records={initialRecords} />
+    <DisplaySection ens={displayEns} records={initialRecords} efpStats={efpStats} />
   );
 } 

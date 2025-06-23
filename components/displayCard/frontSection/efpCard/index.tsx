@@ -28,7 +28,7 @@ export const EfpCard = ({ stats, ens, display }: EfpCardProps) => {
                     <p className="font-normal text-foreground text-sm">{followers}</p>
                     <p className="text-[10px] font-bold text-muted-foreground leading-[133%]">Followers</p>
                 </div>
-                <div className="w-[1px] min-h-full bg-border" />
+                <div className="min-w-[1px] min-h-[30px] flex flex-1 bg-border" />
                 <div className="flex leading-[108%] flex-col items-center">
                     <p className="font-normal text-foreground text-sm">{following}</p>
                     <p className="text-[10px] font-bold text-muted-foreground leading-[133%]">Following</p>

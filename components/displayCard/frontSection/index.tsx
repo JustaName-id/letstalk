@@ -50,16 +50,12 @@ export const FrontSection = ({ subname, onFlip, ens, display, efpStats }: FrontS
     }, [subname])
 
     return (
-        <div style={{
-
-        }} onClick={onFlip} className={`flex bg-white relative flex-col h-full flex-1 border-[3px] border-[#E4E4E7]  rounded-[12px] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.10),_0px_10px_10px_-5px_rgba(0,0,0,0.04)] ${display ? "p-3 gap-2" : "p-6 gap-4"}`} >
+        <div onClick={onFlip} className={`flex bg-white relative flex-col h-full flex-1 border-[3px] border-[#E4E4E7]  rounded-[12px] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.10),_0px_10px_10px_-5px_rgba(0,0,0,0.04)] ${display ? "p-3 gap-2" : "p-6 gap-4"}`} >
             <div style={{
-                backgroundImage: header
-                    ? `linear-gradient(180deg, transparent 0%, #FFF 100%), url(${header})`
-                    : "none",
-                backgroundSize: header ? "100% 100%, 100%" : "auto",
-                backgroundPosition: header ? "center top" : "center",
-                backgroundRepeat: header ? "no-repeat" : "no-repeat",
+                backgroundImage: `linear-gradient(180deg, transparent 0%, #FFF 100%), url(${header || "/banner/fallback.png"})`,
+                backgroundSize: "100% 100%, 100%",
+                backgroundPosition: "center top",
+                backgroundRepeat: "no-repeat",
                 backgroundColor: "#FFF",
             }} className="h-[80px] absolute rounded-t-[12px] top-0 left-0 w-full" />
             <div className={`flex flex-col ${display ? "gap-2" : "gap-3"} z-[2]`}>

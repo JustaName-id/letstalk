@@ -83,7 +83,7 @@ export const SubnamesSection = ({ onSubnameClaim, onEnsSelect }: SubnamesSection
                         <Input placeholder="Enter a subname" disabled={isAddSubnamePending} className="w-full" rightText={`.${clientEnv.justaNameEns}`} containerClassName="w-full" value={username} onChange={(e) => setUsername(e.target.value)} />
                         <Button variant={"default"} disabled={isSubnameAvailablePending || !isSubnameAvailable?.isAvailable || isAddSubnamePending} onClick={handleClaim}>{isAddSubnamePending ? "Claiming..." : "Claim"}</Button>
                     </div>
-                    <p className="text-xs text-muted-foreground font-normal leading-[133%]">Claim your free "letstalk.eth" subname, add your socials, and start networking!</p>
+                    <p className="text-xs text-muted-foreground font-normal leading-[133%]">Claim your free &quot;letstalk.eth&quot; subname, add your socials, and start networking!</p>
                 </div>
                 <div className="flex flex-row gap-[15px] justify-between items-center w-full">
                     <Button variant={"secondary"} onClick={() => disconnect()}>Disconnect</Button>

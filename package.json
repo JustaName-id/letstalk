@@ -11,6 +11,7 @@
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
     "@justaname.id/react": "^0.3.202",
+    "@justweb3/efp-plugin": "^0.1.98",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-label": "^2.1.7",
