@@ -1,24 +1,27 @@
 "use client"
 import { DisplayCard } from "@/components/displayCard";
 import { Button } from "@/components/ui/button";
+import { EfpStats } from "@/lib/efp";
 import { ShareIcon, SparklesIcon } from "@/lib/icons";
 import { clientEnv } from "@/utils/config/clientEnv";
 import { SanitizedRecords } from "@justaname.id/sdk";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { SearchBar } from "./SearchBar";
 
 export interface DisplaySectionProps {
     ens: string;
     className?: string;
     records: SanitizedRecords;
     display?: boolean;
+    efpStats?: EfpStats | null;
 }
 
-export const DisplaySection = ({ ens, className, records, display }: DisplaySectionProps) => {
+export const DisplaySection = ({ ens, className, records, display, efpStats }: DisplaySectionProps) => {
     const address = useMemo(() => {
         return records?.ethAddress?.value
     }, [records])
-
+    const [isSearchActive, setIsSearchActive] = useState(false);
     const [isCardFlipped, setIsCardFlipped] = useState(false);
 
     const handleShare = async (e: React.MouseEvent) => {
@@ -42,7 +45,6 @@ export const DisplaySection = ({ ens, className, records, display }: DisplaySect
         }
     }
 
-
     return (
         <div onClick={() => setIsCardFlipped(!isCardFlipped)} className={`flex flex-col h-[calc(100dvh-40px)] p-5 max-w-[700px] min-[700px]:mx-auto justify-start items-center relative  ${className}`}>
             {address && (
@@ -53,25 +55,31 @@ export const DisplaySection = ({ ens, className, records, display }: DisplaySect
                 </div>
             )}
 
-            <div className="relative z-10 flex flex-row gap-2.5 w-full justify-between items-center">
-                <Button onClick={handleShare} variant={"icon"}><ShareIcon /></Button>
-                {/* <p className="text-[18px] font-normal w-full text-left text-foreground leading-[100%]">{ens}</p> */}
-                <div className="flex flex-row gap-2">
-                    <Link href={`/create`} onClick={(e) => {
-                        e.stopPropagation();
-                    }} >
-                        <Button asChild variant={"secondary"}>
-                            <div className="flex flex-row gap-2 items-center">
-                                <SparklesIcon />
-                                Make a card!
-                            </div>
-                        </Button>
-                    </Link>
+            <div className="relative z-[11] flex flex-row gap-2.5 w-full justify-between items-center">
+                <div className="flex flex-row w-full items-center gap-2">
+                    {!isSearchActive && (
+                        <Button onClick={handleShare} variant={"icon"}><ShareIcon /></Button>
+                    )}
+                    <SearchBar onActiveChange={setIsSearchActive} isSearchActive={isSearchActive} />
                 </div>
+                {!isSearchActive && (
+                    <div className="flex flex-row gap-2">
+                        <Link href={`/create`} onClick={(e) => {
+                            e.stopPropagation();
+                        }} >
+                            <Button asChild variant={"secondary"}>
+                                <div className="flex flex-row gap-2 items-center">
+                                    <SparklesIcon />
+                                    Make a card!
+                                </div>
+                            </Button>
+                        </Link>
+                    </div>
+                )}
             </div>
             {records && (
                 <div className="relative z-10 w-full">
-                    <DisplayCard display={display} subname={records} ens={ens} isCardFlipped={isCardFlipped} />
+                    <DisplayCard display={display} subname={records} ens={ens} isCardFlipped={isCardFlipped} efpStats={efpStats} />
                 </div>
             )}
             <p className="text-base text-gray-500 from-gradient-1-start bg-clip-text">Click to flip Card</p>

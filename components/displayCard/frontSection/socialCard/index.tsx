@@ -4,7 +4,7 @@ import { useMemo } from "react";
 
 export interface SocialCardProps {
     name: string;
-    value: string;
+    value?: string;
     horizontal?: boolean;
     display?: boolean;
     className?: string;
@@ -15,7 +15,7 @@ export const SocialCard = ({ name, value, horizontal = false, className, display
     const Icon = useMemo(() => {
         switch (name) {
             case "Website":
-                return <GlobeIcon />
+                return <GlobeIcon className="min-w-4 min-h-4" />
             case "Github":
                 return <GithubIcon />
             case "Discord":
@@ -50,15 +50,15 @@ export const SocialCard = ({ name, value, horizontal = false, className, display
 
     return (
         <Link
-            target="_blank"
-            href={url}
+            target={url ? "_blank" : undefined}
+            href={url ?? "#"}
             onClick={handleClick}
-            className={`flex flex-col ${display ? "p-2" : "p-4"} pointer-events-auto gap-2 cursor-pointer ${horizontal ? "flex-row" : "flex-col"} bg-sidebar-background rounded-[6px] ${className}`}
+            className={`flex flex-col ${display ? "p-2" : "p-3"} pointer-events-auto gap-2 cursor-pointer ${horizontal ? "flex-row" : "flex-col"} bg-sidebar-background rounded-[6px] ${className}`}
         >
             {Icon}
             <div className="flex flex-col gap-0.5 text-secondary-foreground">
                 <p className="text-xs font-bold leading-[100%] ">{name}</p>
-                <p className="text-sm font-normal leading-[150%] text-ellipsis overflow-hidden whitespace-nowrap max-w-[55vw]">{value}</p>
+                <p className="text-sm font-normal leading-[150%] text-ellipsis overflow-hidden whitespace-nowrap max-w-[50vw]">{value ?? "N/A"}</p>
             </div>
         </Link>
     )

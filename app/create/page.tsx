@@ -28,7 +28,7 @@ export default function Home() {
     }
 
     return (
-        <div className="w-full h-[100dvh]">
+        <div className="w-full h-[100dvh] max-w-[1200px] min-w-[1200px]:mx-auto">
             {
                 !isConnected ?
                     <PreviewSection />

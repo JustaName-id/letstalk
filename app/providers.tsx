@@ -1,13 +1,13 @@
 "use client";
 import '@rainbow-me/rainbowkit/styles.css';
 
+import { clientEnv } from "@/utils/config/clientEnv";
 import { JustaNameProvider, JustaNameProviderConfig } from "@justaname.id/react";
 import { getDefaultConfig, getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { argentWallet, ledgerWallet, trustWallet } from "@rainbow-me/rainbowkit/wallets";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { WagmiProvider } from "wagmi";
+import { http, WagmiProvider } from "wagmi";
 import { mainnet, sepolia } from "wagmi/chains";
-import { clientEnv } from "@/utils/config/clientEnv";
 
 const { wallets } = getDefaultWallets();
 
@@ -21,7 +21,10 @@ const config = getDefaultConfig({
             wallets: [argentWallet, trustWallet, ledgerWallet],
         },
     ],
-    chains: [mainnet, sepolia],
+    chains: [clientEnv.chainId === mainnet.id ? mainnet : sepolia],
+    transports: {
+        [clientEnv.chainId === mainnet.id ? mainnet.id : sepolia.id]: http(clientEnv.providerUrl),
+    },
     ssr: true,
 });
 

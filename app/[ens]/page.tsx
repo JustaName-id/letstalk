@@ -1,10 +1,12 @@
 import { DisplaySection } from "@/components/displaySection";
+import { getEfpStats } from "@/lib/efp";
 import { getEnsRecords } from "@/lib/ens";
 
 export default async function EnsPage({ params }: { params: Promise<{ ens: string }> }) {
     const { ens } = await params;
 
     const records = await getEnsRecords(ens);
+    const efpStats = await getEfpStats(ens);
 
     const initialRecords = records;
 
@@ -16,6 +18,6 @@ export default async function EnsPage({ params }: { params: Promise<{ ens: strin
         );
     }
     return (
-        <DisplaySection ens={decodeURIComponent(ens)} records={initialRecords} />
+        <DisplaySection ens={decodeURIComponent(ens)} records={initialRecords} efpStats={efpStats} />
     );
 } 

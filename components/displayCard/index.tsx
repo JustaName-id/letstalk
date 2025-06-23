@@ -1,3 +1,4 @@
+import { EfpStats } from "@/lib/efp";
 import { SanitizedRecords } from "@justaname.id/sdk";
 import { useEffect, useState } from "react";
 import ReactCardFlip from "react-card-flip";
@@ -9,9 +10,10 @@ export interface DisplayCardProps {
     ens: string;
     isCardFlipped?: boolean;
     display?: boolean;
+    efpStats?: EfpStats | null;
 }
 
-export const DisplayCard = ({ subname, ens, isCardFlipped, display }: DisplayCardProps) => {
+export const DisplayCard = ({ subname, ens, isCardFlipped, display, efpStats }: DisplayCardProps) => {
     const [isFlipped, setIsFlipped] = useState(isCardFlipped ?? false);
 
     useEffect(() => {
@@ -29,7 +31,7 @@ export const DisplayCard = ({ subname, ens, isCardFlipped, display }: DisplayCar
                         height: display ? "400px" : "480px"
                     }
                 }} >
-                    <FrontSection display={display} subname={subname} onFlip={() => setIsFlipped(!isFlipped)} ens={ens} />
+                    <FrontSection display={display} subname={subname} onFlip={() => setIsFlipped(!isFlipped)} ens={ens} efpStats={efpStats} />
                     <BackSection display={display} subname={subname} ens={ens} onFlip={() => setIsFlipped(!isFlipped)} />
                 </ReactCardFlip>
             </div>

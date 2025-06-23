@@ -67,10 +67,7 @@ export const SubnamesSection = ({ onSubnameClaim, onEnsSelect }: SubnamesSection
 
     return (
         <div className="flex flex-1 flex-col p-5 h-full w-full gap-8">
-            <div className="flex flex-col gap-2.5">
-                <h1 className="text-foreground text-[30px] font-normal leading-[100%]">Choose an ENS or Claim a Free cardEth Name!</h1>
-                <p className="text-xs text-muted-foreground font-normal leading-[133%]">Lorem ipsum dolor sit amet consectetur. Aliquet vivamus ligula elementum lorem penatibus pretium.</p>
-            </div>
+            <h1 className="text-foreground text-[30px] font-normal leading-[100%]">Choose an ENS or Claim a Free cardEth Name!</h1>
             <div className="flex flex-col h-full  justify-between">
                 <div className="flex flex-col gap-3 w-full">
                     <p className="text-foreground text-xl font-normal leading-[100%]">{`Your Wallet's ENSs`}</p>
@@ -86,7 +83,7 @@ export const SubnamesSection = ({ onSubnameClaim, onEnsSelect }: SubnamesSection
                         <Input placeholder="Enter a subname" disabled={isAddSubnamePending} className="w-full" rightText={`.${clientEnv.justaNameEns}`} containerClassName="w-full" value={username} onChange={(e) => setUsername(e.target.value)} />
                         <Button variant={"default"} disabled={isSubnameAvailablePending || !isSubnameAvailable?.isAvailable || isAddSubnamePending} onClick={handleClaim}>{isAddSubnamePending ? "Claiming..." : "Claim"}</Button>
                     </div>
-                    <p className="text-xs text-muted-foreground font-normal leading-[133%]">Lorem ipsum dolor sit amet consectetur. Aliquet vivamus ligula elementum lorem penatibus pretium.</p>
+                    <p className="text-xs text-muted-foreground font-normal leading-[133%]">Claim your free "letstalk.eth" subname, add your socials, and start networking!</p>
                 </div>
                 <div className="flex flex-row gap-[15px] justify-between items-center w-full">
                     <Button variant={"secondary"} onClick={() => disconnect()}>Disconnect</Button>
