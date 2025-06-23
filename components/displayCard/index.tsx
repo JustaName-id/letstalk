@@ -22,13 +22,13 @@ export const DisplayCard = ({ subname, ens, isCardFlipped, display, efpStats }: 
 
     return (
         <div className="flex flex-col px-[5%] gap-5 items-center w-full overflow-hidden justify-start relative">
-            <div className={`w-full ${display ? "min-h-[400px]" : "min-h-[480px]"} py-[40px] relative overflow-hidden`}>
-                <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal" containerClassName={`${display ? "min-h-[400px]" : "min-h-[480px]"} relative !z-[2]`} cardStyles={{
+            <div className={`w-full ${display ? "min-h-[410px]" : "min-h-[490px]"} py-[40px] relative overflow-hidden`}>
+                <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal" containerClassName={`${display ? "min-h-[410px]" : "min-h-[490px]"} relative !z-[2]`} cardStyles={{
                     front: {
-                        height: display ? "400px" : "480px"
+                        height: display ? "410px" : "490px"
                     },
                     back: {
-                        height: display ? "400px" : "480px"
+                        height: display ? "410px" : "490px"
                     }
                 }} >
                     <FrontSection display={display} subname={subname} onFlip={() => setIsFlipped(!isFlipped)} ens={ens} efpStats={efpStats} />

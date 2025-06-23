@@ -7,6 +7,7 @@ import { useEffect, useRef } from "react"
 import { useDebounceValue } from 'usehooks-ts'
 import { SearchItem } from "./searchItem"
 import { SearchSkeleton } from "./searchSkeleton"
+import { useRouter } from "next/navigation"
 
 interface SearchBarProps {
     onActiveChange: (value: boolean) => void;
@@ -15,12 +16,13 @@ interface SearchBarProps {
 
 export const SearchBar = ({ onActiveChange, isSearchActive }: SearchBarProps) => {
     const searchInputRef = useRef<HTMLInputElement>(null);
-    const [debouncedValue, setValue] = useDebounceValue("", 500)
+    const [debouncedValue, setValue] = useDebounceValue("", 150)
     const { subnames, isSubnamesLoading } = useSearchSubnames({
         name: debouncedValue,
         chainId: clientEnv.chainId,
         enabled: debouncedValue.length > 2,
     });
+    const router = useRouter()
 
     const handleSearchClick = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -50,6 +52,9 @@ export const SearchBar = ({ onActiveChange, isSearchActive }: SearchBarProps) =>
         if (e.key === 'Escape') {
             setValue("");
             onActiveChange(false);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            router.push(`/${debouncedValue}`);
         }
     };
 

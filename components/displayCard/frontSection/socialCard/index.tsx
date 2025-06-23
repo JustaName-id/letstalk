@@ -48,18 +48,32 @@ export const SocialCard = ({ name, value, horizontal = false, className, display
         e.stopPropagation();
     };
 
-    return (
-        <Link
-            target={url ? "_blank" : undefined}
-            href={url ?? "#"}
-            onClick={handleClick}
-            className={`flex flex-col ${display ? "p-2" : "p-3"} pointer-events-auto gap-2 cursor-pointer ${horizontal ? "flex-row" : "flex-col"} bg-sidebar-background rounded-[6px] ${className}`}
-        >
+    const content = (
+        <>
             {Icon}
             <div className="flex flex-col gap-0.5 text-secondary-foreground">
                 <p className="text-xs font-bold leading-[100%] ">{name}</p>
                 <p className="text-sm font-normal leading-[150%] text-ellipsis overflow-hidden whitespace-nowrap max-w-[50vw]">{value ?? "N/A"}</p>
             </div>
+        </>
+    )
+
+    if (!value) {
+        return (
+            <div className={`flex flex-col ${display ? "p-2" : "p-3"} pointer-events-auto gap-2 ${horizontal ? "flex-row" : "flex-col"} bg-sidebar-background rounded-[6px] ${className}`}>
+                {content}
+            </div>
+        )
+    }
+
+    return (
+        <Link
+            target={!value ? undefined : "_blank"}
+            href={url ?? ""}
+            onClick={handleClick}
+            className={`flex flex-col ${display ? "p-2" : "p-3"} pointer-events-auto gap-2 cursor-pointer ${horizontal ? "flex-row" : "flex-col"} bg-sidebar-background rounded-[6px] ${className}`}
+        >
+            {content}
         </Link>
     )
 }

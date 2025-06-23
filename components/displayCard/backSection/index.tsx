@@ -42,12 +42,10 @@ export const BackSection = ({ subname, ens, onFlip, display }: BackSectionProps)
 
     return (
         <div style={{
-            backgroundImage: header
-                ? `linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, #FFF 30.74%), url(${header})`
-                : "none",
-            backgroundSize: header ? "100% 100%, 115%" : "auto",
-            backgroundPosition: header ? "center, center top" : "center",
-            backgroundRepeat: header ? "no-repeat, no-repeat" : "no-repeat",
+            backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, #FFF 30.74%), url(${header || "/banner/fallback.png"})`,
+            backgroundSize: "100% 100%, 115%",
+            backgroundPosition: "center, center top",
+            backgroundRepeat: "no-repeat, no-repeat",
             backgroundColor: "#FFF",
         }} onClick={onFlip} className={`flex flex-col relative h-full justify-start border-[3px] border-[#E4E4E7]  rounded-[12px] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.10),_0px_10px_10px_-5px_rgba(0,0,0,0.04)] ${display ? "p-3 gap-2" : "p-6 gap-5"}`}>
             <div className="absolute inset-0 z-[1] bg-gradient-to-t h-[60px] top-[80px] from-white from-[40%] to-transparent" />
