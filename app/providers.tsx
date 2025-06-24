@@ -12,8 +12,8 @@ import { mainnet, sepolia } from "wagmi/chains";
 const { wallets } = getDefaultWallets();
 
 const config = getDefaultConfig({
-    appName: 'Lets talk EthCC',
-    projectId: 'YOUR_PROJECT_ID',
+    appName: 'LetsTalk.eth',
+    projectId: clientEnv.projectId,
     wallets: [
         ...wallets,
         {

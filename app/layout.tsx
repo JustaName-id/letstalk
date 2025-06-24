@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Lets talk EthCC",
+  title: "LetsTalk.eth",
   description: "Generate your ENS based Business card",
 };
 

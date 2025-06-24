@@ -8,6 +8,7 @@ const CLIENT_ENV = {
   justaNameDomain: process.env.NEXT_PUBLIC_JUSTANAME_DOMAIN,
   justaNameOrigin: process.env.NEXT_PUBLIC_JUSTANAME_ORIGIN,
   justaNameEns: process.env.NEXT_PUBLIC_JUSTANAME_ENS,
+  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
 };
 
 export const clientEnvSchema = z.object({
@@ -21,6 +22,7 @@ export const clientEnvSchema = z.object({
   justaNameDomain: z.string(),
   justaNameOrigin: z.string(),
   justaNameEns: z.string(),
+  projectId: z.string(),
 })
 
 export type ClientEnv = z.infer<typeof clientEnvSchema>;

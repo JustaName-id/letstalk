@@ -20,7 +20,7 @@ export interface DisplaySectionProps {
     homePage?: boolean;
 }
 
-export const DisplaySection = ({ ens, className, records, efpStats, homePage }: DisplaySectionProps) => {
+export const DisplaySection = ({ ens, className = "", records, efpStats, homePage }: DisplaySectionProps) => {
     const address = useMemo(() => {
         return records?.ethAddress?.value
     }, [records])
@@ -64,7 +64,7 @@ export const DisplaySection = ({ ens, className, records, efpStats, homePage }: 
     }
 
     return (
-        <div onClick={() => !subnameDrawerOpen && !selectedSubname && setIsCardFlipped(!isCardFlipped)} className={`flex flex-col h-[calc(100dvh-40px)] p-4 py-2  max-w-[700px] min-[700px]:mx-auto justify-between items-center relative  ${className}`}>
+        <div onClick={() => !subnameDrawerOpen && !selectedSubname && setIsCardFlipped(!isCardFlipped)} className={`flex flex-col h-[calc(100dvh-8px)] p-4 py-2  max-w-[700px] min-[700px]:mx-auto justify-between items-center relative  ${className}`}>
             {address && (
                 <div className="absolute inset-0 h-[100dvh] overflow-hidden pointer-events-none z-0">
                     <div className="absolute inset-0 text-[99px] text-center leading-[90%] font-mono font-bold text-gray-400 opacity-10 break-all overflow-hidden">

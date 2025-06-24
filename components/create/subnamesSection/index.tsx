@@ -79,7 +79,7 @@ export const SubnamesSection = ({ onEnsSelect, onEnsDrawerOpen, ensDrawerOpen }:
                 <div className="hidden">
                     <DrawerTitle></DrawerTitle>
                 </div>
-                <div className="flex flex-1 flex-col p-5 h-full w-full gap-6">
+                <div className="flex flex-1 flex-col p-5 h-full w-full gap-5">
                     <h1 style={{
                         lineHeight: "110%"
                     }} className="text-foreground text-[30px] font-normal">Choose an existing ENS name to edit, or claim a free letstalk.eth subname!</h1>
