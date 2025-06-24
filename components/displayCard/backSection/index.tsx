@@ -3,7 +3,7 @@ import { CopiedIcon, CopyIcon } from "@/lib/icons";
 import { clientEnv } from "@/utils/config/clientEnv";
 import { useEnsAvatar } from "@justaname.id/react";
 import { SanitizedRecords } from "@justaname.id/sdk";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import QRCode from "react-qr-code";
 
 export interface BackSectionProps {
@@ -35,7 +35,7 @@ export const BackSection = ({ subname, ens, onFlip, display }: BackSectionProps)
         }, 2000);
     }
 
-    const { avatar } = useEnsAvatar({
+    const { avatar, isLoading } = useEnsAvatar({
         ens: ens,
         chainId: clientEnv.chainId,
     })
@@ -55,10 +55,7 @@ export const BackSection = ({ subname, ens, onFlip, display }: BackSectionProps)
             }} value={qrCodeContent} className="w-full z-[2] h-full bg-transparent scale-90" />
             <div className="flex flex-row py-2.5 gap-2.5 items-center">
                 <Avatar className="w-16 h-16 rounded-full">
-                    <AvatarImage className="w-16 h-16 rounded-full" src={avatar} />
-                    <AvatarFallback>
-                        {subname.display?.charAt(0)}
-                    </AvatarFallback>
+                    <AvatarImage className="w-16 h-16 rounded-full" src={isLoading ? undefined : !avatar ? "/avatar/fallback.webp" : avatar} />
                 </Avatar>
                 <div className="flex flex-col text-foreground gap-1 overflow-x-hidden max-w-[70%]">
                     <p className="text-xl font-normal leading-[140%] ">{ens}</p>

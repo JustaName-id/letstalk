@@ -141,3 +141,53 @@
   word-wrap: break-word;
   max-height: calc(1.33 * 1.2em * 3); 
 }
+
+
+.scroll-area-no-drag {
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent drawer interference with scroll areas */
+.scroll-container {
+  touch-action: pan-y !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  overflow-anchor: none;
+}
+
+/* Ensure smooth scrolling on iOS */
+.scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Prevent text selection during scroll */
+.scroll-container * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Re-enable text selection for interactive elements */
+.scroll-container button,
+.scroll-container input,
+.scroll-container textarea {
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}

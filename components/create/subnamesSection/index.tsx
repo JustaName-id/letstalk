@@ -38,22 +38,26 @@ export const SubnamesSection = ({ onEnsSelect, onEnsDrawerOpen, ensDrawerOpen }:
         ensDomain: clientEnv.justaNameEns,
         enabled: !!debouncedUsername && debouncedUsername.length > 2,
     });
-    const { addSubname, isAddSubnamePending } = useAddSubname({
-        backendUrl: clientEnv.websiteUrl,
-    });
+    const { addSubname, isAddSubnamePending } = useAddSubname();
 
     const allSubnames = useMemo(() => {
         if (isAccountSubnamesPending || isAccountEnsNamesPending) {
             return []
         }
-        const combined = [...accountSubnames, ...accountEnsNames];
+        const combined = [];
+
+        const letsTalkSubname = accountSubnames.find(subname => subname.ens.endsWith(`${clientEnv.justaNameEns}`));
+        if(letsTalkSubname) {
+            combined.push(letsTalkSubname);
+        }
+        const accountSubnamesWithoutLetsTalk = accountSubnames.filter(subname => subname.ens !== letsTalkSubname?.ens);
+        combined.push(...accountSubnamesWithoutLetsTalk);
+        combined.push(...accountEnsNames);
         const uniqueSubnames = combined.filter((subname, index, array) =>
             array.findIndex(item => item.ens === subname.ens) === index
         );
         return uniqueSubnames;
     }, [accountSubnames, accountEnsNames, isAccountSubnamesPending, isAccountEnsNamesPending])
-
-
 
     const handleClaim = () => {
         if (isAddSubnamePending) return;
@@ -81,9 +85,12 @@ export const SubnamesSection = ({ onEnsSelect, onEnsDrawerOpen, ensDrawerOpen }:
                     <DrawerTitle></DrawerTitle>
                 </div>
                 <div className="flex flex-1 flex-col p-5 h-full w-full gap-5">
-                    <h1 style={{
-                        lineHeight: "110%"
-                    }} className="text-foreground text-[30px] font-normal">Choose an existing ENS name to edit, or claim a free letstalk.eth subname!</h1>
+                    <div>
+                        <h1 style={{
+                            lineHeight: "110%"
+                        }} className="text-foreground text-[30px] font-normal">Choose your favorite ENS</h1>
+                        <span> or claim a free letstalk.eth subname!</span>
+                    </div>
                     <div className="flex flex-col h-full gap-3 justify-between">
                         <div className="flex flex-col gap-4">
                             <p className="text-foreground text-xl font-normal leading-[100%]">Claim a Subname</p>
@@ -105,7 +112,7 @@ export const SubnamesSection = ({ onEnsSelect, onEnsDrawerOpen, ensDrawerOpen }:
 
                         </div>
                         <div className="flex flex-col gap-3 w-full">
-                            <p className="text-foreground text-xl font-normal leading-[100%]">{`Your Wallet's ENSs`}</p>
+                            <p className="text-foreground text-xl font-normal leading-[100%]">{`Your ENS names`}</p>
                             <div className="flex flex-col gap-2 max-h-[32vh] overflow-y-auto w-full">
                                 {
                                     allSubnames.length > 0 ?

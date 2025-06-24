@@ -1,8 +1,8 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { clientEnv } from "@/utils/config/clientEnv";
 import { useEnsAvatar } from "@justaname.id/react";
 import { SanitizedRecords } from "@justaname.id/sdk";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { EfpCard } from "./efpCard";
 import { SocialCard } from "./socialCard";
 
@@ -20,7 +20,7 @@ export const FrontSection = ({ subname, onFlip, ens }: FrontSectionProps) => {
         return subname.header ?? subname.banner
     }, [subname])
 
-    const { avatar } = useEnsAvatar({
+    const { avatar, isLoading } = useEnsAvatar({
         ens: ens,
         chainId: clientEnv.chainId
     })
@@ -46,7 +46,7 @@ export const FrontSection = ({ subname, onFlip, ens }: FrontSectionProps) => {
     }, [subname])
 
     return (
-        <div onClick={onFlip} className={`flex bg-white relative flex-col h-full flex-1 border-[3px] border-[#E4E4E7]  rounded-[12px] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.10),_0px_10px_10px_-5px_rgba(0,0,0,0.04)] p-4 gap-3`} >
+        <div onClick={onFlip} className={`flex bg-white relative flex-col h-full flex-1 border-[3px] border-[#E4E4E7]  rounded-[12px] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.10),_0px_10px_10px_-5px_rgba(0,0,0,0.04)] p-4 gap-3 justify-between`} >
             <div style={{
                 backgroundImage: `linear-gradient(180deg, transparent 0%, #FFF 100%), url(${header || "/banner/fallback.png"})`,
                 backgroundSize: "100% 100%, 100%",
@@ -57,10 +57,7 @@ export const FrontSection = ({ subname, onFlip, ens }: FrontSectionProps) => {
             <div className={`flex flex-col gap-3 z-[2]`}>
                 <div className="flex flex-row w-full items-center gap-2.5">
                     <Avatar className="w-16 h-16 rounded-full flex-shrink-0">
-                        <AvatarImage className="w-16 h-16 rounded-full" src={!!avatar ? avatar : undefined} />
-                        <AvatarFallback>
-                            {subname.display?.charAt(0)}
-                        </AvatarFallback>
+                        <AvatarImage className="w-16 h-16 rounded-full" src={isLoading ? undefined : !avatar ? "/avatar/fallback.webp" : avatar} />
                     </Avatar>
                     <div className="flex flex-col gap-1">
                         <p
@@ -77,7 +74,7 @@ export const FrontSection = ({ subname, onFlip, ens }: FrontSectionProps) => {
                 </div>
                 <p className={`font-normal text-muted-foreground leading-[133%] line-clamp-3 text-xs`}>{subname.description}</p>
             </div>
-            <EfpCard ens={ens} />
+            <EfpCard ens={subname.ethAddress.value || ens} />
             <div className={`grid grid-cols-2 gap-2.5 gap-y-2.5`}>
                 <SocialCard name="Website" value={website} horizontal className="col-span-2" />
                 <SocialCard name="Telegram" value={telegram} className="col-span-1" />

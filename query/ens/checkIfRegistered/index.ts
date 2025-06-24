@@ -2,7 +2,7 @@
 import { clientEnv } from '@/utils/config/clientEnv'
 import { addEnsContracts } from '@ensdomains/ensjs'
 import { getRecords } from '@ensdomains/ensjs/public'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { createPublicClient, http } from 'viem'
 import { mainnet, sepolia } from 'wagmi/chains'
 
@@ -26,8 +26,12 @@ export const checkEnsIsRegistered = async (ens: string) => {
         })
         resolver = ensOwner?.resolverAddress || ''
         hasEthCoin = !!ensOwner?.coins.find((coin) => coin.id === 60)
-    } catch (e) {}
+    } catch {}
 
+    if(ens.endsWith('.letstalk.eth') && !hasEthCoin){
+        return false
+    }
+    // console.log(ens, resolver, hasEthCoin)
     if (
         !!resolver &&
         resolver !== '0x0000000000000000000000000000000000000000'
@@ -42,11 +46,14 @@ export const checkEnsIsRegistered = async (ens: string) => {
     }
 }
 
-export const useEnsIsRegistered = (ens: string) => {
+type UseEnsIsRegisteredOptions = Omit<UseQueryOptions<boolean, Error, boolean, string[]>, 'queryKey' | 'queryFn'>
+
+export const useEnsIsRegistered = (ens: string, options?: UseEnsIsRegisteredOptions) => {
     const query = useQuery({
         queryKey: buildEnsIsRegistered(ens),
         queryFn: () => checkEnsIsRegistered(ens),
-        enabled: !!ens,
+        enabled: (options?.enabled ?? true) && !!ens,
+        ...options,
     })
 
     return {

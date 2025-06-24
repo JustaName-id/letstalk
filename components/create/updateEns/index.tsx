@@ -6,14 +6,13 @@ import { clientEnv } from "@/utils/config/clientEnv";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRecords, useUpdateSubname } from "@justaname.id/react";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState} from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../../ui/button";
 import { Form } from "../../ui/form";
 import { FormInputField } from "../../ui/form-input-field";
 import { AvatarEditorDialog } from "./avatarSelectorDialog";
 import { BannerEditorDialog } from "./bannerSelectorDialog";
-
 export interface UpdateEnsSectionProps {
     subname: {
         name: string;
@@ -25,6 +24,7 @@ export interface UpdateEnsSectionProps {
 
 export const UpdateEnsSection = ({ subname, onUpdateDrawerOpen, updateDrawerOpen }: UpdateEnsSectionProps) => {
     const router = useRouter()
+
     const { updateSubname, isUpdateSubnamePending } = useUpdateSubname({
         chainId: clientEnv.chainId,
     });

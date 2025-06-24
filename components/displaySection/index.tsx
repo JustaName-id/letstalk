@@ -13,6 +13,7 @@ import { SubnamesSection } from "../create/subnamesSection";
 import { UpdateEnsSection } from "../create/updateEns";
 import { DisplayCardSkeleton } from "../displayCard/skeleton";
 import { SearchBar } from "./SearchBar";
+import Link from "next/link";
 export interface DisplaySectionProps {
     ens: string;
     className?: string;
@@ -90,10 +91,12 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
 
             <div className="flex flex-row pointer-events-auto !z-[20] w-full items-center justify-between gap-2">
                 <div className="flex flex-row items-center gap-2 w-full">
-                    <SearchBar onlyIcon onActiveChange={setIsSearchActive} isSearchActive={isSearchActive} />
-                    {!isSearchActive && (
-                        <LetsTalkIcon />
-                    )}
+                    <SearchBar onlyIcon onActiveChange={setIsSearchActive} isSearchActive={isSearchActive}  />
+                    <div style={{ display: isSearchActive ? "none" : "block", maxWidth: isSearchActive ? 0 : "100%", pointerEvents: isSearchActive ? 'none' : 'auto' }}>
+                        <Link href="/">
+                            <LetsTalkIcon />
+                        </Link>
+                    </div>
                 </div>
                 {!isSearchActive && (
                     <div className="flex flex-row gap-2">

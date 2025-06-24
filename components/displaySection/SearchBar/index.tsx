@@ -4,7 +4,7 @@ import { handleNormalizeEns } from "@/lib/helpers"
 import { SearchIcon } from "@/lib/icons"
 import { useEnsIsRegistered } from "@/query/ens"
 import { clientEnv } from "@/utils/config/clientEnv"
-import { useSearchSubnames } from "@justaname.id/react"
+// import { useSearchSubnames } from "@justaname.id/react"
 import { useRouter } from "next/navigation"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useDebounceValue } from 'usehooks-ts'
@@ -21,82 +21,137 @@ export const SearchBar = ({ onActiveChange, isSearchActive, onlyIcon }: SearchBa
     const searchInputRef = useRef<HTMLInputElement>(null);
     const [searchValue, setSearchValue] = useState("")
     const [debouncedValue] = useDebounceValue(searchValue, 150)
-    const { subnames, isSubnamesLoading } = useSearchSubnames({
-        name: debouncedValue,
-        chainId: clientEnv.chainId,
-        enabled: debouncedValue.length > 2,
-    });
+
+    const shouldFetchData = debouncedValue.length > 2;
+
+    // const { subnames, isSubnamesLoading } = useSearchSubnames({
+    //     name: debouncedValue,
+    //     chainId: clientEnv.chainId,
+    //     enabled: shouldFetchData,
+    // });
+
     const router = useRouter()
 
     const {
-        isRegistered,
-        isIsRegisteredLoading
+        isRegistered: isEthRegistered,
+        isIsRegisteredLoading: isEthLoading
     } = useEnsIsRegistered(
-        handleNormalizeEns(debouncedValue, "eth"))
+        handleNormalizeEns(debouncedValue, "eth"),
+        { enabled: shouldFetchData }
+    )
+
     const {
         isRegistered: isBoxRegistered,
-        isIsRegisteredLoading: isBoxIsRegisteredLoading
+        isIsRegisteredLoading: isBoxLoading
     } = useEnsIsRegistered(
-        handleNormalizeEns(debouncedValue, "box")
+        handleNormalizeEns(debouncedValue, "box"),
+        { enabled: shouldFetchData }
     );
+
     const {
         isRegistered: isBaseRegistered,
-        isIsRegisteredLoading: isBaseIsRegisteredLoading
+        isIsRegisteredLoading: isBaseLoading
     } = useEnsIsRegistered(
-        handleNormalizeEns(debouncedValue, "base.eth")
+        handleNormalizeEns(debouncedValue, "base.eth"),
+        { enabled: shouldFetchData }
     );
 
     const {
         isRegistered: isLetsTalkRegistered,
-        isIsRegisteredLoading: isLetsTalkIsRegisteredLoading
+        isIsRegisteredLoading: isLetsTalkLoading
     } = useEnsIsRegistered(
-        handleNormalizeEns(debouncedValue, clientEnv.justaNameEns)
+        handleNormalizeEns(debouncedValue, "letstalk.eth"),
+        { enabled: shouldFetchData }
     );
 
-    const shouldShowEthDomain = useMemo(() => {
-        const isNotAlreadyInInput = !debouncedValue.includes('.eth');
-        const isValidAndRegistered = isRegistered && !isIsRegisteredLoading;
-        return isNotAlreadyInInput && isValidAndRegistered;
-    }, [debouncedValue, isRegistered, isIsRegisteredLoading]);
+    const manualDomains = useMemo(() => {
+        const domains: { ens: string; shouldShow: boolean }[] = [];
 
-    const shouldShowBoxDomain = useMemo(() => {
-        const isNotAlreadyInInput = !debouncedValue.includes('.box');
-        const isValidAndRegistered = isBoxRegistered && !isBoxIsRegisteredLoading;
-        return isNotAlreadyInInput && isValidAndRegistered;
-    }, [debouncedValue, isBoxRegistered, isBoxIsRegisteredLoading]);
-
-    const shouldShowBaseDomain = useMemo(() => {
-        const isNotAlreadyInInput = !debouncedValue.includes('.base.eth');
-        const isValidAndRegistered = isBaseRegistered && !isBaseIsRegisteredLoading;
-        return isNotAlreadyInInput && isValidAndRegistered;
-    }, [debouncedValue, isBaseRegistered, isBaseIsRegisteredLoading]);
-
-    const shouldShowJustaNameDomain = useMemo(() => {
-        const isNotAlreadyInInput = !debouncedValue.includes(clientEnv.justaNameEns);
-        const isValidAndRegistered = isLetsTalkRegistered && !isLetsTalkIsRegisteredLoading;
-        return isNotAlreadyInInput && isValidAndRegistered;
-    }, [debouncedValue, isLetsTalkRegistered, isLetsTalkIsRegisteredLoading, clientEnv.justaNameEns]);
-
-    const filteredSubnames = useMemo(() => {
-        const manualDomains: string[] = [];
-
-        if (shouldShowEthDomain) {
-            manualDomains.push(handleNormalizeEns(debouncedValue, "eth"));
+        const shouldShowEth = !debouncedValue.includes('.eth') && isEthRegistered && !isEthLoading;
+        if (shouldShowEth) {
+            domains.push({
+                ens: handleNormalizeEns(debouncedValue, "eth"),
+                shouldShow: true
+            });
         }
-        if (shouldShowBoxDomain) {
-            manualDomains.push(handleNormalizeEns(debouncedValue, "box"));
-        }
-        if (shouldShowBaseDomain) {
-            manualDomains.push(handleNormalizeEns(debouncedValue, "base.eth"));
-        }
-        if (shouldShowJustaNameDomain) {
-            manualDomains.push(handleNormalizeEns(debouncedValue, clientEnv.justaNameEns));
+        
+        const shouldShowBox = !debouncedValue.includes('.box') && isBoxRegistered && !isBoxLoading;
+        if (shouldShowBox) {
+            domains.push({
+                ens: handleNormalizeEns(debouncedValue, "box"),
+                shouldShow: true
+            });
         }
 
-        return subnames.domains
-            .filter((domain) => typeof domain !== 'string')
-            .filter((domain) => !manualDomains.includes(domain.ens));
-    }, [subnames.domains, shouldShowEthDomain, shouldShowBoxDomain, shouldShowBaseDomain, shouldShowJustaNameDomain, debouncedValue, clientEnv.justaNameEns]);
+        const shouldShowBase = !debouncedValue.includes('.base.eth') && isBaseRegistered && !isBaseLoading;
+        if (shouldShowBase) {
+            domains.push({
+                ens: handleNormalizeEns(debouncedValue, "base.eth"),
+                shouldShow: true
+            });
+        }
+
+        // const shouldShowJustaName = !debouncedValue.includes(clientEnv.justaNameEns) &&
+        //     subnames.domains.some((subname) => {
+        //         if (typeof subname === 'string') return subname.endsWith(clientEnv.justaNameEns);
+        //         return subname.ens.endsWith(clientEnv.justaNameEns);
+        //     });
+        //
+        // if (shouldShowJustaName) {
+        //     domains.push({
+        //         ens: handleNormalizeEns(debouncedValue, clientEnv.justaNameEns),
+        //         shouldShow: true
+        //     });
+        // }
+
+        const shouldShowLetsTalk = !debouncedValue.includes('.letstalk.eth') && isLetsTalkRegistered && !isLetsTalkLoading;
+        if (shouldShowLetsTalk) {
+            domains.push({
+                ens: handleNormalizeEns(debouncedValue, "letstalk.eth"),
+                shouldShow: true
+            });
+        }
+
+        return domains.filter((domain, index, self) =>
+            index === self.findIndex((d) => d.ens === domain.ens)
+        );
+    }, [debouncedValue, isEthRegistered, isEthLoading, isBoxRegistered, isBoxLoading, isBaseRegistered, isBaseLoading, isLetsTalkLoading, isLetsTalkRegistered]);
+
+    // const filteredSubnames = useMemo(() => {
+    //     const manualDomainNames = manualDomains.map(d => d.ens);
+    //
+    //     return subnames.domains
+    //         .filter((domain) => typeof domain !== 'string')
+    //         .filter((domain) => !manualDomainNames.includes(domain.ens));
+    // }, [subnames.domains, manualDomains]);
+
+    const isAnyLoading = useMemo(() => {
+        if (!shouldFetchData) return false;
+
+        // return isSubnamesLoading ||
+        //     isEthLoading ||
+        //     isBoxLoading ||
+        //     isBaseLoading;
+        return isEthLoading ||
+            isBoxLoading ||
+            isBaseLoading ||
+            isLetsTalkLoading
+    }, [shouldFetchData,
+        // isSubnamesLoading,
+        isLetsTalkLoading,
+        isEthLoading, isBoxLoading, isBaseLoading]);
+
+    // const hasResults = useMemo(() => {
+    //     return manualDomains.length > 0 || filteredSubnames.length > 0;
+    // }, [manualDomains.length, filteredSubnames.length]);
+
+    const hasResults = useMemo(() => {
+        return manualDomains.length > 0;
+    }, [manualDomains.length]);
+
+    const shouldShowDropdown = useMemo(() => {
+        return shouldFetchData && (isAnyLoading || hasResults);
+    }, [shouldFetchData, isAnyLoading, hasResults]);
 
     const handleSearchClick = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -105,7 +160,7 @@ export const SearchBar = ({ onActiveChange, isSearchActive, onlyIcon }: SearchBa
 
     const handleSearchBlur = (e: React.FocusEvent) => {
         setTimeout(() => {
-            if (subnames.domains.length === 0 || !e.relatedTarget) {
+            if (!hasResults || !e.relatedTarget) {
                 setSearchValue("");
                 onActiveChange(false);
             }
@@ -138,7 +193,7 @@ export const SearchBar = ({ onActiveChange, isSearchActive, onlyIcon }: SearchBa
         }
     }, [isSearchActive]);
 
-
+    // console.log(manualDomains, filteredSubnames)
     if (isSearchActive) {
         return (
             <div className="w-full relative z-[100]">
@@ -152,29 +207,28 @@ export const SearchBar = ({ onActiveChange, isSearchActive, onlyIcon }: SearchBa
                     onKeyDown={handleKeyDown}
                     className="w-full bg-white"
                 />
-                {subnames.domains.length > 0 && (
+                {shouldShowDropdown && (
                     <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50 max-h-80 overflow-y-auto">
-                        {isSubnamesLoading ? (
+                        {isAnyLoading ? (
                             <div className="p-2">
                                 <SearchSkeleton number={4} />
                             </div>
                         ) : (
                             <div className="flex flex-col">
-                                {shouldShowEthDomain && (
-                                    <SearchItem ens={handleNormalizeEns(debouncedValue, "eth")} onSelect={handleItemSelect} />
-                                )}
-                                {shouldShowBoxDomain && (
-                                    <SearchItem ens={handleNormalizeEns(debouncedValue, "box")} onSelect={handleItemSelect} />
-                                )}
-                                {shouldShowBaseDomain && (
-                                    <SearchItem ens={handleNormalizeEns(debouncedValue, "base.eth")} onSelect={handleItemSelect} />
-                                )}
-                                {shouldShowJustaNameDomain && (
-                                    <SearchItem ens={handleNormalizeEns(debouncedValue, clientEnv.justaNameEns)} onSelect={handleItemSelect} />
-                                )}
-                                {filteredSubnames.map((domain) => (
-                                    <SearchItem key={domain.ens} ens={domain.ens} onSelect={handleItemSelect} />
+                                {manualDomains.map((domain) => (
+                                    <SearchItem
+                                        key={domain.ens}
+                                        ens={domain.ens}
+                                        onSelect={handleItemSelect}
+                                    />
                                 ))}
+                                {/*{filteredSubnames.map((domain) => (*/}
+                                {/*    <SearchItem*/}
+                                {/*        key={domain.ens}*/}
+                                {/*        ens={domain.ens}*/}
+                                {/*        onSelect={handleItemSelect}*/}
+                                {/*    />*/}
+                                {/*))}*/}
                             </div>
                         )}
                     </div>
