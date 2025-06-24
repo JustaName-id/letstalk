@@ -17,12 +17,12 @@ export const EfpCard = ({ ens, display }: EfpCardProps) => {
     const followers = useMemo(() => {
         if (isStatsLoading) return 0;
         return parseInt(stats?.followers_count ?? "0");
-    }, [stats]);
+    }, [isStatsLoading, stats?.followers_count]);
 
     const following = useMemo(() => {
         if (isStatsLoading) return 0;
         return parseInt(stats?.following_count ?? "0");
-    }, [stats]);
+    }, [isStatsLoading, stats?.following_count]);
 
     return (
         <div

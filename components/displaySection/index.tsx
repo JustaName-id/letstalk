@@ -48,7 +48,7 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
         if (isOffchainResolversPending || !offchainResolvers) return false;
         if (walletAddress?.toLowerCase() !== address?.toLowerCase()) return false;
         return checkIfMyCard(records?.records.resolverAddress ?? "", offchainResolvers);
-    }, [walletAddress, address, records])
+    }, [isOffchainResolversPending, offchainResolvers, walletAddress, address, records?.records.resolverAddress])
 
     const handleShare = async (e: React.MouseEvent) => {
         e.stopPropagation();
