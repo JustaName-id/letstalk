@@ -1,9 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { EfpStats } from "@/lib/efp";
 import { clientEnv } from "@/utils/config/clientEnv";
 import { useEnsAvatar } from "@justaname.id/react";
 import { SanitizedRecords } from "@justaname.id/sdk";
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { EfpCard } from "./efpCard";
 import { SocialCard } from "./socialCard";
 
@@ -11,13 +10,11 @@ export interface FrontSectionProps {
     subname: SanitizedRecords;
     onFlip: () => void;
     ens: string;
-    efpStats?: EfpStats | null;
 }
 
-export const FrontSection = ({ subname, onFlip, ens, efpStats }: FrontSectionProps) => {
-    const containerRef = useRef<HTMLDivElement>(null);
+export const FrontSection = ({ subname, onFlip, ens }: FrontSectionProps) => {
 
-    const displayText = subname.display ?? ens;
+    const displayText = !subname.display ? ens : subname.display;
 
     const header = useMemo(() => {
         return subname.header ?? subname.banner
@@ -58,7 +55,7 @@ export const FrontSection = ({ subname, onFlip, ens, efpStats }: FrontSectionPro
                 backgroundColor: "#FFF",
             }} className="h-[80px] absolute rounded-t-[9px] top-0 left-0 w-full" />
             <div className={`flex flex-col gap-3 z-[2]`}>
-                <div ref={containerRef} className="flex flex-row w-full items-center gap-2.5">
+                <div className="flex flex-row w-full items-center gap-2.5">
                     <Avatar className="w-16 h-16 rounded-full flex-shrink-0">
                         <AvatarImage className="w-16 h-16 rounded-full" src={!!avatar ? avatar : undefined} />
                         <AvatarFallback>
@@ -72,15 +69,15 @@ export const FrontSection = ({ subname, onFlip, ens, efpStats }: FrontSectionPro
                                 fontSize: `${!!displayText ? displayText.length > 18 ? 16 : 25 : ens.length > 18 ? 16 : 25}px`,
                             }}
                         >
-                            {displayText ?? ens}
+                            {displayText}
                         </p>
-                        {!!displayText && <p className={"text-xs font-bold text-muted-foreground leading-[90%]"}>{ens}</p>}
+                        {!!subname.display && <p className={"text-xs font-bold text-muted-foreground leading-[90%]"}>{ens}</p>}
 
                     </div>
                 </div>
                 <p className={`font-normal text-muted-foreground leading-[133%] line-clamp-3 text-xs`}>{subname.description}</p>
             </div>
-            <EfpCard stats={efpStats} ens={ens} />
+            <EfpCard ens={ens} />
             <div className={`grid grid-cols-2 gap-2.5 gap-y-2.5`}>
                 <SocialCard name="Website" value={website} horizontal className="col-span-2" />
                 <SocialCard name="Telegram" value={telegram} className="col-span-1" />

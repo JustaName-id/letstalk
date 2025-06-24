@@ -1,47 +1,53 @@
 "use client"
 import { DisplayCard } from "@/components/displayCard";
 import { Button } from "@/components/ui/button";
-import { EfpStats } from "@/lib/efp";
 import { checkIfMyCard } from "@/lib/helpers";
 import { LetsTalkIcon, PenIcon, ShareIcon, SparklesIcon } from "@/lib/icons";
 import { clientEnv } from "@/utils/config/clientEnv";
-import { useOffchainResolvers } from "@justaname.id/react";
-import { sanitizeRecords, SubnameResponse } from "@justaname.id/sdk";
+import { useOffchainResolvers, useRecords } from "@justaname.id/react";
+import { sanitizeRecords } from "@justaname.id/sdk";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 import { SubnamesSection } from "../create/subnamesSection";
 import { UpdateEnsSection } from "../create/updateEns";
+import { DisplayCardSkeleton } from "../displayCard/skeleton";
 import { SearchBar } from "./SearchBar";
-
 export interface DisplaySectionProps {
     ens: string;
     className?: string;
-    subname: SubnameResponse;
-    efpStats?: EfpStats | null;
     homePage?: boolean;
 }
 
-export const DisplaySection = ({ ens, className = "", subname, efpStats, homePage }: DisplaySectionProps) => {
-    const records = useMemo(() => sanitizeRecords(subname), [subname]);
-
-    const address = useMemo(() => {
-        return records?.ethAddress?.value
-    }, [records])
-    const [isSearchActive, setIsSearchActive] = useState(false);
-    const [isCardFlipped, setIsCardFlipped] = useState(false);
+export const DisplaySection = ({ ens, className = "", homePage }: DisplaySectionProps) => {
     const { openConnectModal } = useConnectModal();
     const { isConnected, address: walletAddress } = useAccount();
+
+    const { records, isRecordsPending } = useRecords({
+        ens: ens,
+        chainId: clientEnv.chainId,
+    });
+
+    const sanitizedRecords = useMemo(() => sanitizeRecords(records), [records]);
+
+    const address = useMemo(() => {
+        return sanitizedRecords?.ethAddress?.value
+    }, [sanitizedRecords])
+    const [isSearchActive, setIsSearchActive] = useState(false);
+    const [isCardFlipped, setIsCardFlipped] = useState(false);
     const [subnameDrawerOpen, setSubnameDrawerOpen] = useState(false);
-    const [selectedSubname, setSelectedSubname] = useState<string | null>(null);
+    const [selectedSubname, setSelectedSubname] = useState<{
+        name: string;
+        new: boolean;
+    } | null>(null);
     const { offchainResolvers, isOffchainResolversPending } =
         useOffchainResolvers();
 
     const isMyCard = useMemo(() => {
         if (isOffchainResolversPending || !offchainResolvers) return false;
         if (walletAddress?.toLowerCase() !== address?.toLowerCase()) return false;
-        return checkIfMyCard(subname.records.resolverAddress, offchainResolvers);
-    }, [walletAddress, address])
+        return checkIfMyCard(records?.records.resolverAddress ?? "", offchainResolvers);
+    }, [walletAddress, address, records])
 
     const handleShare = async (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -69,6 +75,14 @@ export const DisplaySection = ({ ens, className = "", subname, efpStats, homePag
             setSelectedSubname(null);
             setSubnameDrawerOpen(false);
         }
+    }
+
+    if (!isRecordsPending && !records) {
+        return (
+            <div className="flex flex-col h-[calc(100dvh-8px)] p-4 py-2  max-w-[700px] min-[700px]:mx-auto justify-center items-center relative  ${className}">
+                <p className="text-muted-foreground text-center text-[30px] font-normal leading-[90%]">ENS name: {ens} not found or has no records.</p>
+            </div>
+        )
     }
 
     return (
@@ -106,10 +120,16 @@ export const DisplaySection = ({ ens, className = "", subname, efpStats, homePag
                     </div>
                 )}
             </div>
-            {records && (
+            {isRecordsPending ? (
                 <div className="relative translate-y-[-20px] z-10 w-full">
-                    <DisplayCard subname={records} ens={ens} isCardFlipped={isCardFlipped} efpStats={efpStats} />
+                    <DisplayCardSkeleton />
                 </div>
+            ) : (
+                sanitizedRecords && (
+                    <div className="relative translate-y-[-20px] z-10 w-full">
+                        <DisplayCard subname={sanitizedRecords} ens={ens} isCardFlipped={isCardFlipped} />
+                    </div>
+                )
             )}
             {homePage ? (
                 <div style={{
@@ -136,7 +156,7 @@ export const DisplaySection = ({ ens, className = "", subname, efpStats, homePag
                                 if (!isConnected) {
                                     openConnectModal?.()
                                 } else {
-                                    setSelectedSubname(ens);
+                                    setSelectedSubname({ name: ens, new: false });
                                     setSubnameDrawerOpen(true);
                                 }
                             }}>

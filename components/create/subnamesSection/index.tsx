@@ -8,7 +8,7 @@ import { Input } from "../../ui/input";
 import { EnsCard } from "./ensCard";
 
 export interface SubnamesSectionProps {
-    onEnsSelect: (ens: string) => void;
+    onEnsSelect: (ens: { name: string, new: boolean }) => void;
     onEnsDrawerOpen: (open: boolean) => void;
     ensDrawerOpen: boolean;
 }
@@ -63,7 +63,7 @@ export const SubnamesSection = ({ onEnsSelect, onEnsDrawerOpen, ensDrawerOpen }:
             ensDomain: clientEnv.justaNameEns,
         }, {
             onSuccess: () => {
-                onEnsSelect(`${debouncedUsername}.${clientEnv.justaNameEns}`);
+                onEnsSelect({ name: `${debouncedUsername}.${clientEnv.justaNameEns}`, new: true });
                 setUsername("");
             }
         });
@@ -110,7 +110,7 @@ export const SubnamesSection = ({ onEnsSelect, onEnsDrawerOpen, ensDrawerOpen }:
                                 {
                                     allSubnames.length > 0 ?
                                         allSubnames.map((subname) => (
-                                            <EnsCard key={subname.ens} records={subname} onEnsSelect={onEnsSelect} />
+                                            <EnsCard key={subname.ens} records={subname} onEnsSelect={() => onEnsDrawerOpen(false)} />
                                         ))
                                         :
                                         <p style={{

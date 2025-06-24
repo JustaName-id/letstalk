@@ -1,21 +1,26 @@
 import { Button } from "@/components/ui/button";
-import { EfpStats } from "@/lib/efp";
+import { EFPIcon } from "@/lib/icons";
+import { useStats } from "@justweb3/efp-plugin";
 import Link from "next/link";
 import { useMemo } from "react";
-
 export interface EfpCardProps {
-    stats?: EfpStats | null;
     ens: string;
     display?: boolean;
 }
 
-export const EfpCard = ({ stats, ens, display }: EfpCardProps) => {
+export const EfpCard = ({ ens, display }: EfpCardProps) => {
+
+    const { stats, isStatsLoading } = useStats({
+        addressOrEns: ens,
+    });
 
     const followers = useMemo(() => {
+        if (isStatsLoading) return 0;
         return parseInt(stats?.followers_count ?? "0");
     }, [stats]);
 
     const following = useMemo(() => {
+        if (isStatsLoading) return 0;
         return parseInt(stats?.following_count ?? "0");
     }, [stats]);
 
@@ -34,9 +39,23 @@ export const EfpCard = ({ stats, ens, display }: EfpCardProps) => {
                     <p className="text-[10px] font-bold text-muted-foreground leading-[133%]">Following</p>
                 </div>
             </div>
-            <Link href={`https://efp.app/${ens}`} target="_blank">
-                <Button variant={"secondary"} size={"sm"}>Follow</Button>
-            </Link>
+            {!isStatsLoading && stats ? (
+                <Link unselectable="on" href={`https://efp.app/${ens}`} target="_blank">
+                    <Button variant={"secondary"} size={"sm"}>
+                        <div className="flex flex-row gap-2 items-center">
+                            <EFPIcon />
+                            Follow
+                        </div>
+                    </Button>
+                </Link>
+            ) : (
+                <Button disabled variant={"secondary"} size={"sm"}>
+                    <div className="flex flex-row gap-2 items-center">
+                        <EFPIcon />
+                        Follow
+                    </div>
+                </Button>
+            )}
         </div>
     )
 }

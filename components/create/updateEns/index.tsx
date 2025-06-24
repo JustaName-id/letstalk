@@ -15,26 +15,28 @@ import { AvatarEditorDialog } from "./avatarSelectorDialog";
 import { BannerEditorDialog } from "./bannerSelectorDialog";
 
 export interface UpdateEnsSectionProps {
-    subname: string;
+    subname: {
+        name: string;
+        new: boolean;
+    };
     onUpdateDrawerOpen: (open: boolean) => void;
     updateDrawerOpen: boolean;
 }
 
 export const UpdateEnsSection = ({ subname, onUpdateDrawerOpen, updateDrawerOpen }: UpdateEnsSectionProps) => {
+    const router = useRouter()
     const { updateSubname, isUpdateSubnamePending } = useUpdateSubname({
         chainId: clientEnv.chainId,
     });
-    const router = useRouter()
-
-    const { records, isRecordsPending } = useRecords({
-        ens: subname,
+    const { records, isRecordsPending, refetchRecords } = useRecords({
+        ens: subname.name,
         chainId: clientEnv.chainId,
+        enabled: !subname.new,
     });
 
     const initialValues = useMemo(() => {
         return getSocials(records?.sanitizedRecords ?? undefined);
     }, [records]);
-
 
     const [avatar, setAvatar] = useState<string>(initialValues.avatar);
     const [banner, setBanner] = useState<string>(initialValues.header);
@@ -75,12 +77,16 @@ export const UpdateEnsSection = ({ subname, onUpdateDrawerOpen, updateDrawerOpen
         }
 
         updateSubname({
-            ens: subname,
+            ens: subname.name,
             chainId: clientEnv.chainId,
             text: filteredRecords,
         }, {
             onSuccess: () => {
-                router.push(`/${subname}`);
+                if (subname.new) {
+                    router.push(`/${subname.name}`);
+                } else {
+                    refetchRecords();
+                }
                 onUpdateDrawerOpen(false);
             }
         });
@@ -113,12 +119,12 @@ export const UpdateEnsSection = ({ subname, onUpdateDrawerOpen, updateDrawerOpen
                                     <AvatarEditorDialog
                                         onImageChange={handleAvatarChange}
                                         avatar={!avatar ? undefined : avatar}
-                                        subname={subname}
+                                        subname={subname.name}
                                     />
                                     <BannerEditorDialog
                                         onImageChange={handleBannerChange}
                                         banner={!banner ? undefined : banner}
-                                        subname={subname}
+                                        subname={subname.name}
                                     />
                                 </div>
                                 <div className="flex flex-col gap-2.5 w-full">

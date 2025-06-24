@@ -140,3 +140,13 @@ export const PenIcon = (props: React.SVGProps<SVGSVGElement>) => {
         </svg>
     )
 }
+
+export const EFPIcon = (props: React.SVGProps<SVGSVGElement>) => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none" {...props}>
+            <path d="M12 8.87291L7.5 11.5L3 8.87291L7.49877 1.5L12 8.87291Z" fill="#18181B" />
+            <path d="M3 10.5L7.49753 15.5L12 10.5L7.49753 12.5966L3 10.5Z" fill="#18181B" />
+            <path d="M12 12.5L12 13.5M12 14.5L12 13.5M12 13.5L11 13.5M12 13.5L13 13.5" stroke="#18181B" stroke-linecap="square" />
+        </svg>
+    )
+}

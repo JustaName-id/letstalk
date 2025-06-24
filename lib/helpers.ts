@@ -51,3 +51,13 @@ export const checkIfMyCard = (resolverAddress: string, offchainResolvers: Offcha
           resolverAddress === offchainResolver?.resolverAddress
         );
 }
+
+export const handleNormalizeEns = (ens: string, chain: string) => {
+    if (ens.includes(`.${chain}`)) return ens;
+
+    if (ens.endsWith('.')) return `${ens}${chain}`
+
+    if (ens.includes('.') && ens.split('.')[1].length > 0) return ens;
+
+    return `${ens}.${chain}`;
+}
