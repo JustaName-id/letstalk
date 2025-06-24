@@ -21,7 +21,7 @@ export const updateEnsSchema = z.object({
 
 export type UpdateEnsFormData = z.infer<typeof updateEnsSchema>;
 
-const fieldToRecordKeyMap: Record<string, string> = {
+export const fieldToRecordKeyMap: Record<string, string> = {
     github: "com.github",
     discord: "com.discord",
     x: "com.x",

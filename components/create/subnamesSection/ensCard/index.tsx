@@ -15,11 +15,11 @@ export const EnsCard = ({ records, onEnsSelect }: EnsCardProps) => {
 
     return (
         <div onClick={() => onEnsSelect(records.ens)} className="flex flex-row p-2.5 gap-2.5 items-center rounded-[6px] border-[1px] border-border">
-            <Avatar className="w-12 h-12 rounded-full">
+            <Avatar className="w-8 h-8 rounded-full">
                 <AvatarImage className="rounded-full" src={ensAvatar} />
                 <AvatarFallback>{records.ens.slice(0, 2)}</AvatarFallback>
             </Avatar>
-            <p className="text-foreground text-[18px] font-normal leading-[100%]">{records.ens}</p>
+            <p className="text-foreground text-base font-normal leading-[150%]">{records.ens}</p>
         </div>
     )
 }

@@ -11,11 +11,10 @@ export interface FrontSectionProps {
     subname: SanitizedRecords;
     onFlip: () => void;
     ens: string;
-    display?: boolean;
     efpStats?: EfpStats | null;
 }
 
-export const FrontSection = ({ subname, onFlip, ens, display, efpStats }: FrontSectionProps) => {
+export const FrontSection = ({ subname, onFlip, ens, efpStats }: FrontSectionProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
     const displayText = subname.display ?? ens;
@@ -50,7 +49,7 @@ export const FrontSection = ({ subname, onFlip, ens, display, efpStats }: FrontS
     }, [subname])
 
     return (
-        <div onClick={onFlip} className={`flex bg-white relative flex-col h-full flex-1 border-[3px] border-[#E4E4E7]  rounded-[12px] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.10),_0px_10px_10px_-5px_rgba(0,0,0,0.04)] ${display ? "p-3 gap-2" : "p-6 gap-4"}`} >
+        <div onClick={onFlip} className={`flex bg-white relative flex-col h-full flex-1 border-[3px] border-[#E4E4E7]  rounded-[12px] shadow-[0px_20px_25px_-5px_rgba(0,0,0,0.10),_0px_10px_10px_-5px_rgba(0,0,0,0.04)] p-4 gap-3`} >
             <div style={{
                 backgroundImage: `linear-gradient(180deg, transparent 0%, #FFF 100%), url(${header || "/banner/fallback.png"})`,
                 backgroundSize: "100% 100%, 100%",
@@ -58,10 +57,10 @@ export const FrontSection = ({ subname, onFlip, ens, display, efpStats }: FrontS
                 backgroundRepeat: "no-repeat",
                 backgroundColor: "#FFF",
             }} className="h-[80px] absolute rounded-t-[12px] top-0 left-0 w-full" />
-            <div className={`flex flex-col ${display ? "gap-2" : "gap-3"} z-[2]`}>
+            <div className={`flex flex-col gap-3 z-[2]`}>
                 <div ref={containerRef} className="flex flex-row w-full items-center gap-2.5">
                     <Avatar className="w-16 h-16 rounded-full flex-shrink-0">
-                        <AvatarImage className="w-16 h-16 rounded-full" src={avatar} />
+                        <AvatarImage className="w-16 h-16 rounded-full" src={!!avatar ? avatar : undefined} />
                         <AvatarFallback>
                             {subname.display?.charAt(0)}
                         </AvatarFallback>
@@ -75,19 +74,19 @@ export const FrontSection = ({ subname, onFlip, ens, display, efpStats }: FrontS
                         >
                             {displayText ?? ens}
                         </p>
-                        {!!displayText && <p className="text-xs font-bold text-muted-foreground leading-[90%]">{ens}</p>}
+                        {!!displayText && <p className={"text-xs font-bold text-muted-foreground leading-[90%]"}>{ens}</p>}
 
                     </div>
                 </div>
-                <p className="text-xs font-normal text-muted-foreground leading-[133%]">{subname.description}</p>
+                <p className={`font-normal text-muted-foreground leading-[133%] line-clamp-3 text-xs`}>{subname.description}</p>
             </div>
-            <EfpCard stats={efpStats} ens={ens} display={display} />
-            <div className={`grid grid-cols-2 ${display ? "gap-1.5 gap-y-1.5" : "gap-2.5 gap-y-2.5"}`}>
-                <SocialCard display={display} name="Website" value={website} horizontal className="col-span-2" />
-                <SocialCard display={display} name="Telegram" value={telegram} className="col-span-1" />
-                <SocialCard display={display} name="X/Twitter" value={x} className="col-span-1" />
-                <SocialCard display={display} name="Github" value={github} className="col-span-1" />
-                <SocialCard display={display} name="Discord" value={discord} className="col-span-1" />
+            <EfpCard stats={efpStats} ens={ens} />
+            <div className={`grid grid-cols-2 gap-2.5 gap-y-2.5`}>
+                <SocialCard name="Website" value={website} horizontal className="col-span-2" />
+                <SocialCard name="Telegram" value={telegram} className="col-span-1" />
+                <SocialCard name="X/Twitter" value={x} className="col-span-1" />
+                <SocialCard name="Github" value={github} className="col-span-1" />
+                <SocialCard name="Discord" value={discord} className="col-span-1" />
             </div>
         </div >
     )

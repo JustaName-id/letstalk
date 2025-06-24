@@ -3,18 +3,19 @@ import { Input } from "@/components/ui/input"
 import { SearchIcon } from "@/lib/icons"
 import { clientEnv } from "@/utils/config/clientEnv"
 import { useSearchSubnames } from "@justaname.id/react"
+import { useRouter } from "next/navigation"
 import { useEffect, useRef } from "react"
 import { useDebounceValue } from 'usehooks-ts'
 import { SearchItem } from "./searchItem"
 import { SearchSkeleton } from "./searchSkeleton"
-import { useRouter } from "next/navigation"
 
 interface SearchBarProps {
     onActiveChange: (value: boolean) => void;
     isSearchActive: boolean;
+    onlyIcon?: boolean;
 }
 
-export const SearchBar = ({ onActiveChange, isSearchActive }: SearchBarProps) => {
+export const SearchBar = ({ onActiveChange, isSearchActive, onlyIcon }: SearchBarProps) => {
     const searchInputRef = useRef<HTMLInputElement>(null);
     const [debouncedValue, setValue] = useDebounceValue("", 150)
     const { subnames, isSubnamesLoading } = useSearchSubnames({
@@ -97,8 +98,13 @@ export const SearchBar = ({ onActiveChange, isSearchActive }: SearchBarProps) =>
     }
 
     return (
-        <Button onClick={handleSearchClick} variant={"icon"}>
-            <SearchIcon />
-        </Button>
+        <div className="flex flex-row items-center gap-2">
+            {!onlyIcon && (
+                <Button onClick={handleSearchClick} variant={"icon"}>
+                    <SearchIcon />
+                </Button>
+            )}
+            {onlyIcon && <SearchIcon onClick={handleSearchClick} className="cursor-pointer" />}
+        </div>
     );
 }

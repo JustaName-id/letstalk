@@ -13,12 +13,12 @@ export default async function HomePage() {
 
   if (!initialRecords) {
     return (
-      <div className="flex items-center flex-1 justify-center">
+      <div className="flex items-center h-full px-[5%] flex-1 justify-center">
         <p className="text-lg text-center text-muted-foreground">ENS name {displayEns} not found or has no records.</p>
       </div>
     );
   }
   return (
-    <DisplaySection ens={displayEns} records={initialRecords} efpStats={efpStats} />
+    <DisplaySection homePage ens={displayEns} records={initialRecords} efpStats={efpStats} />
   );
 } 

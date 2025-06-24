@@ -6,11 +6,10 @@ export interface SocialCardProps {
     name: string;
     value?: string;
     horizontal?: boolean;
-    display?: boolean;
     className?: string;
 }
 
-export const SocialCard = ({ name, value, horizontal = false, className, display }: SocialCardProps) => {
+export const SocialCard = ({ name, value, horizontal = false, className }: SocialCardProps) => {
 
     const Icon = useMemo(() => {
         switch (name) {
@@ -60,7 +59,7 @@ export const SocialCard = ({ name, value, horizontal = false, className, display
 
     if (!value) {
         return (
-            <div className={`flex flex-col ${display ? "p-2" : "p-3"} pointer-events-auto gap-2 ${horizontal ? "flex-row" : "flex-col"} bg-sidebar-background rounded-[6px] ${className}`}>
+            <div className={`flex flex-col p-2.5 pointer-events-auto gap-1 ${horizontal ? "flex-row" : "flex-col"} bg-sidebar-background rounded-[6px] ${className}`}>
                 {content}
             </div>
         )
@@ -71,7 +70,7 @@ export const SocialCard = ({ name, value, horizontal = false, className, display
             target={!value ? undefined : "_blank"}
             href={url ?? ""}
             onClick={handleClick}
-            className={`flex flex-col ${display ? "p-2" : "p-3"} pointer-events-auto gap-2 cursor-pointer ${horizontal ? "flex-row" : "flex-col"} bg-sidebar-background rounded-[6px] ${className}`}
+            className={`flex flex-col p-2.5 pointer-events-auto gap-1 cursor-pointer ${horizontal ? "flex-row" : "flex-col"} bg-sidebar-background rounded-[6px] ${className}`}
         >
             {content}
         </Link>

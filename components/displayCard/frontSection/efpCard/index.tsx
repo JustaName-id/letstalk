@@ -21,7 +21,7 @@ export const EfpCard = ({ stats, ens, display }: EfpCardProps) => {
 
     return (
         <div
-            className={`flex flex-row items-center justify-between ${display ? "p-2" : "p-4"} gap-2 bg-sidebar-background rounded-[6px]`}
+            className={`flex flex-row items-center justify-between ${display ? "p-2" : "p-3"} gap-2 bg-sidebar-background rounded-[6px]`}
         >
             <div className="flex flex-row items-center gap-2">
                 <div className="flex leading-[108%] flex-col items-center">

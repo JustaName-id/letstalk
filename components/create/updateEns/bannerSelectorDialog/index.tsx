@@ -9,7 +9,7 @@ import 'react-advanced-cropper/dist/style.css';
 
 export interface BannerEditorDialogProps {
     onImageChange: (image: string) => void;
-    banner: string;
+    banner?: string;
     subname: string;
 }
 
