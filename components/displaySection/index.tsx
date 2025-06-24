@@ -77,13 +77,6 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
         }
     }
 
-    if (!isRecordsPending && !records) {
-        return (
-            <div className="flex flex-col h-[calc(100dvh-8px)] p-4 py-2  max-w-[700px] min-[700px]:mx-auto justify-center items-center relative  ${className}">
-                <p className="text-muted-foreground text-center text-[30px] font-normal leading-[90%]">ENS name: {ens} not found or has no records.</p>
-            </div>
-        )
-    }
 
     return (
         <div onClick={() => !subnameDrawerOpen && !selectedSubname && setIsCardFlipped(!isCardFlipped)} className={`flex flex-col h-[calc(100dvh-8px)] p-4 py-2  max-w-[700px] min-[700px]:mx-auto justify-between items-center relative  ${className}`}>
@@ -125,11 +118,16 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
                     <DisplayCardSkeleton />
                 </div>
             ) : (
-                sanitizedRecords && (
+                !records ? (
                     <div className="relative translate-y-[-20px] z-10 w-full">
-                        <DisplayCard subname={sanitizedRecords} ens={ens} isCardFlipped={isCardFlipped} />
+                        <p className="text-muted-foreground text-center text-[30px] font-normal leading-[90%]">ENS name: {ens} not found or has no records.</p>
                     </div>
-                )
+                ) :
+                    sanitizedRecords && (
+                        <div className="relative translate-y-[-20px] z-10 w-full">
+                            <DisplayCard subname={sanitizedRecords} ens={ens} isCardFlipped={isCardFlipped} />
+                        </div>
+                    )
             )}
             {homePage ? (
                 <div style={{
