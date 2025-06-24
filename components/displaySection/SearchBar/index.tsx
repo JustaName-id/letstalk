@@ -46,7 +46,7 @@ export const SearchBar = ({ onActiveChange, isSearchActive, onlyIcon }: SearchBa
     const handleItemSelect = (ens: string) => {
         setValue("");
         onActiveChange(false);
-        window.location.href = `/${ens}`;
+        router.push(`/${ens}`);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -76,7 +76,7 @@ export const SearchBar = ({ onActiveChange, isSearchActive, onlyIcon }: SearchBa
                     onBlur={handleSearchBlur}
                     onChange={(e) => handleSearchChange(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    className="w-full"
+                    className="w-full bg-white"
                 />
                 {subnames.domains.length > 0 && (
                     <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50 max-h-80 overflow-y-auto">

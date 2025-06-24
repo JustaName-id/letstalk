@@ -2,9 +2,11 @@
 import { DisplayCard } from "@/components/displayCard";
 import { Button } from "@/components/ui/button";
 import { EfpStats } from "@/lib/efp";
+import { checkIfMyCard } from "@/lib/helpers";
 import { LetsTalkIcon, PenIcon, ShareIcon, SparklesIcon } from "@/lib/icons";
 import { clientEnv } from "@/utils/config/clientEnv";
-import { SanitizedRecords } from "@justaname.id/sdk";
+import { useOffchainResolvers } from "@justaname.id/react";
+import { sanitizeRecords, SubnameResponse } from "@justaname.id/sdk";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
@@ -15,12 +17,14 @@ import { SearchBar } from "./SearchBar";
 export interface DisplaySectionProps {
     ens: string;
     className?: string;
-    records: SanitizedRecords;
+    subname: SubnameResponse;
     efpStats?: EfpStats | null;
     homePage?: boolean;
 }
 
-export const DisplaySection = ({ ens, className = "", records, efpStats, homePage }: DisplaySectionProps) => {
+export const DisplaySection = ({ ens, className = "", subname, efpStats, homePage }: DisplaySectionProps) => {
+    const records = useMemo(() => sanitizeRecords(subname), [subname]);
+
     const address = useMemo(() => {
         return records?.ethAddress?.value
     }, [records])
@@ -30,9 +34,13 @@ export const DisplaySection = ({ ens, className = "", records, efpStats, homePag
     const { isConnected, address: walletAddress } = useAccount();
     const [subnameDrawerOpen, setSubnameDrawerOpen] = useState(false);
     const [selectedSubname, setSelectedSubname] = useState<string | null>(null);
+    const { offchainResolvers, isOffchainResolversPending } =
+        useOffchainResolvers();
 
     const isMyCard = useMemo(() => {
-        return walletAddress?.toLowerCase() === address?.toLowerCase();
+        if (isOffchainResolversPending || !offchainResolvers) return false;
+        if (walletAddress?.toLowerCase() !== address?.toLowerCase()) return false;
+        return checkIfMyCard(subname.records.resolverAddress, offchainResolvers);
     }, [walletAddress, address])
 
     const handleShare = async (e: React.MouseEvent) => {

@@ -60,22 +60,24 @@ export const UpdateEnsSection = ({ subname, onUpdateDrawerOpen, updateDrawerOpen
             }
         });
 
+        const filteredRecords = records.filter(r => r.key !== "avatar" && r.key !== "header");
+
         if (initialValues.avatar && initialValues.avatar.trim() !== "" && !avatar) {
-            records.push({ key: "avatar", value: "" });
+            filteredRecords.push({ key: "avatar", value: "" });
         } else if (avatar) {
-            records.push({ key: "avatar", value: avatar });
+            filteredRecords.push({ key: "avatar", value: avatar });
         }
 
         if (initialValues.header && initialValues.header.trim() !== "" && !banner) {
-            records.push({ key: "header", value: "" });
+            filteredRecords.push({ key: "header", value: "" });
         } else if (banner) {
-            records.push({ key: "header", value: banner });
+            filteredRecords.push({ key: "header", value: banner });
         }
 
         updateSubname({
             ens: subname,
             chainId: clientEnv.chainId,
-            text: records,
+            text: filteredRecords,
         }, {
             onSuccess: () => {
                 router.push(`/${subname}`);

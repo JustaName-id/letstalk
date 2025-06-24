@@ -1,16 +1,17 @@
-import { SanitizedRecords, sanitizeRecords } from "@justaname.id/sdk";
+import { SubnameResponse } from "@justaname.id/sdk";
 import { normalize } from 'viem/ens';
 import { getJustaname } from "./justaname";
+import { serverEnv } from "@/utils/config/serverEnv";
 
-export async function getEnsRecords(ens: string): Promise<SanitizedRecords | null> {
+export async function getEnsRecords(ens: string): Promise<SubnameResponse | null> {
   try {
     const justaName = getJustaname()
 
-    const records = await justaName.subnames.getRecords({
-        ens: normalize(decodeURIComponent(ens)),
-        // chainId: serverEnv.chainId,
+    const subname = await justaName.subnames.getSubname({
+        subname: normalize(decodeURIComponent(ens)),
+        chainId: serverEnv.chainId,
     });
-    return sanitizeRecords(records);
+    return subname;
     
   } catch (error) {
     console.error(`Error fetching ENS records for ${ens}:`, error);

@@ -5,7 +5,7 @@ import React from 'react';
 
 export interface SearchItemProps {
     ens: string;
-    onSelect?: (ens: string) => void;
+    onSelect: (ens: string) => void;
 }
 
 
@@ -18,11 +18,7 @@ export const SearchItem: React.FC<SearchItemProps> = ({
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        if (onSelect) {
-            onSelect(ens);
-        } else {
-            window.location.href = `/${ens}`;
-        }
+        onSelect(ens);
     };
 
     return (
@@ -32,7 +28,7 @@ export const SearchItem: React.FC<SearchItemProps> = ({
             onMouseDown={(e) => e.preventDefault()}
         >
             <Avatar className="h-[30px] w-[30px] rounded-full" >
-                <AvatarImage src={isLoading ? undefined : avatar} />
+                <AvatarImage src={isLoading ? undefined : !avatar ? "/avatar/fallback.webp" : avatar} />
             </Avatar>
             <div className="space-y-2 flex-1 ">
                 <p className="text-sm font-medium">{ens}</p>

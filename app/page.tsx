@@ -6,12 +6,11 @@ export default async function HomePage() {
 
   const displayEns = "ens.eth";
 
-  const records = await getEnsRecords(displayEns);
+  const subname = await getEnsRecords(displayEns);
   const efpStats = await getEfpStats(displayEns);
 
-  const initialRecords = records;
 
-  if (!initialRecords) {
+  if (!subname) {
     return (
       <div className="flex items-center h-full px-[5%] flex-1 justify-center">
         <p className="text-lg text-center text-muted-foreground">ENS name {displayEns} not found or has no records.</p>
@@ -19,6 +18,6 @@ export default async function HomePage() {
     );
   }
   return (
-    <DisplaySection homePage ens={displayEns} records={initialRecords} efpStats={efpStats} />
+    <DisplaySection homePage ens={displayEns} subname={subname} efpStats={efpStats} />
   );
 } 

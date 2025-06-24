@@ -5,12 +5,11 @@ import { getEnsRecords } from "@/lib/ens";
 export default async function EnsPage({ params }: { params: Promise<{ ens: string }> }) {
     const { ens } = await params;
 
-    const records = await getEnsRecords(ens);
+    const subname = await getEnsRecords(ens);
     const efpStats = await getEfpStats(ens);
 
-    const initialRecords = records;
 
-    if (!initialRecords) {
+    if (!subname) {
         return (
             <div className="flex items-center h-full px-[5%] flex-1 justify-center">
                 <p className="text-lg text-center text-muted-foreground">ENS name: {ens} not found or has no records.</p>
@@ -18,6 +17,6 @@ export default async function EnsPage({ params }: { params: Promise<{ ens: strin
         );
     }
     return (
-        <DisplaySection ens={decodeURIComponent(ens)} records={initialRecords} efpStats={efpStats} />
+        <DisplaySection ens={decodeURIComponent(ens)} subname={subname} efpStats={efpStats} />
     );
 } 

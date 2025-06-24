@@ -25,11 +25,12 @@ export const SubnamesSection = ({ onEnsSelect, onEnsDrawerOpen, ensDrawerOpen }:
         }, 500);
         return () => clearTimeout(timeout);
     }, [username]);
+
     const { accountSubnames, isAccountSubnamesPending } = useAccountSubnames({
         enabled: !!address
     });
     const { accountEnsNames, isAccountEnsNamesPending } = useAccountEnsNames({
-        enabled: !!address
+        enabled: !!address,
     });
     const { isSubnameAvailable, isSubnameAvailablePending } = useIsSubnameAvailable({
         username: debouncedUsername,

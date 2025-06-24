@@ -56,7 +56,7 @@ export const FrontSection = ({ subname, onFlip, ens, efpStats }: FrontSectionPro
                 backgroundPosition: "center top",
                 backgroundRepeat: "no-repeat",
                 backgroundColor: "#FFF",
-            }} className="h-[80px] absolute rounded-t-[12px] top-0 left-0 w-full" />
+            }} className="h-[80px] absolute rounded-t-[9px] top-0 left-0 w-full" />
             <div className={`flex flex-col gap-3 z-[2]`}>
                 <div ref={containerRef} className="flex flex-row w-full items-center gap-2.5">
                     <Avatar className="w-16 h-16 rounded-full flex-shrink-0">
