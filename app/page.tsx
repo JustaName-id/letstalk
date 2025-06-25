@@ -92,7 +92,6 @@ export const metadata: Metadata = {
     robots: "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
     googlebot: "index,follow,max-image-preview:large,max-snippet:-1",
     bingbot: "index,follow",
-    "google-site-verification": serverEnv.googleSiteVerification,
 
     // Schema.org structured data
     "application-name": "Let's Talk",
