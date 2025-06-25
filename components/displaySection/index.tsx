@@ -5,7 +5,6 @@ import { checkIfMyCard } from "@/lib/helpers";
 import { LetsTalkIcon, PenIcon, ShareIcon, SparklesIcon } from "@/lib/icons";
 import { clientEnv } from "@/utils/config/clientEnv";
 import { useOffchainResolvers, useRecords } from "@justaname.id/react";
-import { sanitizeRecords } from "@justaname.id/sdk";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
@@ -29,7 +28,7 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
         chainId: clientEnv.chainId,
     });
 
-    const sanitizedRecords = useMemo(() => sanitizeRecords(records), [records]);
+    const sanitizedRecords = useMemo(() => records?.sanitizedRecords, [records]);
 
     const address = useMemo(() => {
         return sanitizedRecords?.ethAddress?.value

@@ -7,7 +7,8 @@ import { getDefaultConfig, getDefaultWallets, RainbowKitProvider } from "@rainbo
 import { argentWallet, ledgerWallet, trustWallet } from "@rainbow-me/rainbowkit/wallets";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { http, WagmiProvider } from "wagmi";
-import { mainnet, sepolia } from "wagmi/chains";
+import { mainnet, sepolia, base } from "wagmi/chains";
+import {OnchainKitProvider} from "@coinbase/onchainkit";
 
 const { wallets } = getDefaultWallets();
 
@@ -21,9 +22,10 @@ const config = getDefaultConfig({
             wallets: [argentWallet, trustWallet, ledgerWallet],
         },
     ],
-    chains: [clientEnv.chainId === mainnet.id ? mainnet : sepolia],
+    chains: [clientEnv.chainId === mainnet.id ? mainnet : sepolia, base],
     transports: {
         [clientEnv.chainId === mainnet.id ? mainnet.id : sepolia.id]: http(clientEnv.providerUrl),
+        [base.id]: http(),
     },
     ssr: true,
 });
@@ -47,11 +49,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
     return (
         <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
-                <RainbowKitProvider>
-                    <JustaNameProvider config={justaNameConfig}>
-                        {children}
-                    </JustaNameProvider>
-                </RainbowKitProvider>
+                <OnchainKitProvider chain={base}
+                                    config={{
+                                        appearance: {
+                                            mode: 'auto',
+                                            theme: 'base',
+                                        },
+                                    }}>
+                    <RainbowKitProvider>
+                        <JustaNameProvider config={justaNameConfig}>
+                            {children}
+                        </JustaNameProvider>
+                    </RainbowKitProvider>
+                </OnchainKitProvider>
             </QueryClientProvider>
         </WagmiProvider>
     );

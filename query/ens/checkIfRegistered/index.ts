@@ -4,7 +4,9 @@ import { addEnsContracts } from '@ensdomains/ensjs'
 import { getRecords } from '@ensdomains/ensjs/public'
 import { useQuery, UseQueryOptions } from '@tanstack/react-query'
 import { createPublicClient, http } from 'viem'
-import { mainnet, sepolia } from 'wagmi/chains'
+import { mainnet, sepolia} from 'wagmi/chains'
+// import { base } from 'viem/chains'
+// import { getAddress } from '@coinbase/onchainkit/identity'
 
 export const client = createPublicClient({
     chain: addEnsContracts(
@@ -18,7 +20,19 @@ export const buildEnsIsRegistered = (ens: string) => ['ENS_IS_REGISTERED', ens]
 export const checkEnsIsRegistered = async (ens: string) => {
     let resolver = ''
     let hasEthCoin = false
-    const ensEndsWithEth = ens.endsWith('.eth')
+    // const ensEndsWithEth = ens.endsWith('.eth')
+    // if(ens.endsWith('.base.eth')){
+    //     try {
+    //         console.log(ens)
+    //         const address = await getAddress({name: ens, chain: base})
+    //         console.log(address)
+    //         return !!address
+    //     } catch (error) {
+    //         console.log("base fail",error)
+    //         return false
+    //     }
+    // }
+
     try {
         const ensOwner = await getRecords(client, {
             name: ens,
@@ -36,11 +50,11 @@ export const checkEnsIsRegistered = async (ens: string) => {
         !!resolver &&
         resolver !== '0x0000000000000000000000000000000000000000'
     ) {
-        if (ensEndsWithEth) {
-            return true
-        } else {
+        // if (ensEndsWithEth) {
+        //     return true
+        // } else {
             return hasEthCoin
-        }
+        // }
     } else {
         return false
     }

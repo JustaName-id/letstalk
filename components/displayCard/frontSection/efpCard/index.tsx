@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { EFPIcon } from "@/lib/icons";
-import { useStats } from "@justweb3/efp-plugin";
+import { useStats, getStats } from "@justweb3/efp-plugin";
 import Link from "next/link";
 import { useMemo } from "react";
 export interface EfpCardProps {
