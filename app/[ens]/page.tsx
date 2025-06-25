@@ -1,7 +1,7 @@
-import {DisplaySection} from "@/components/displaySection";
-import {getStandardRecords} from "@/lib/ens";
+import { DisplaySection } from "@/components/displaySection";
+import { getStandardRecords } from "@/lib/ens";
+import { Metadata, Viewport } from "next";
 import {serverEnv} from "@/utils/config/serverEnv";
-import {Metadata, Viewport} from "next";
 
 export const viewport: Viewport = {
     width: "device-width",
@@ -147,13 +147,9 @@ export async function generateMetadata({params}: { params: Promise<{ ens: string
                 "parsely-author": displayName,
             },
 
-            verification: {
-                google: serverEnv.googleSiteVerification,
-            },
-
-            // App-specific metadata
-            applicationName: "Let's Talk",
-            referrer: "origin-when-cross-origin",
+        // App-specific metadata
+        applicationName: "Let's Talk",
+        referrer: "origin-when-cross-origin",
 
             // Enhanced robots configuration
             robots: {

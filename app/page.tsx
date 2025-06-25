@@ -106,15 +106,7 @@ export const metadata: Metadata = {
     "pinterest:description": "Create professional ENS business cards and showcase your Web3 identity with Let's Talk platform.",
   },
 
-  verification: {
-    google: serverEnv.googleSiteVerification,
-    // Add other verification meta tags as needed
-    // yandex: "your-yandex-verification",
-    // bing: "your-bing-verification",
-  },
-
-  // App-specific metadata
-  applicationName: "Let's Talk - ENS Business Cards",
+  applicationName: "Let's Talk",
   referrer: "origin-when-cross-origin",
 
   // Enhanced robots configuration
