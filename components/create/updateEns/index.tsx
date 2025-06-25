@@ -6,7 +6,7 @@ import { clientEnv } from "@/utils/config/clientEnv";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRecords, useUpdateSubname } from "@justaname.id/react";
 import { useRouter } from "next/navigation";
-import { useMemo, useState} from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../../ui/button";
 import { Form } from "../../ui/form";
@@ -106,7 +106,7 @@ export const UpdateEnsSection = ({ subname, onUpdateDrawerOpen, updateDrawerOpen
                 <div className="hidden">
                     <DrawerTitle></DrawerTitle>
                 </div>
-                <div className="flex flex-col w-full p-5 h-full gap-6">
+                <div className="flex flex-col w-full p-5 h-full gap-0 overflow-y-auto">
                     <div className="flex flex-col gap-2.5">
                         <h1 className="text-foreground text-[30px] font-normal leading-[100%]">Update Your ENS Profile</h1>
                         <p className="text-xs text-muted-foreground font-normal leading-[133%]">Fill in your profile information for your ENS business card.</p>
