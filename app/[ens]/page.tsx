@@ -1,6 +1,5 @@
 import { DisplaySection } from "@/components/displaySection";
 import { getStandardRecords } from "@/lib/ens";
-import { serverEnv } from "@/utils/config/serverEnv";
 import { Metadata, Viewport } from "next";
 
 export const viewport: Viewport = {
@@ -100,10 +99,6 @@ export async function generateMetadata({ params }: { params: Promise<{ ens: stri
             robots: "index,follow",
             googlebot: "index,follow",
             bingbot: "index,follow",
-        },
-
-        verification: {
-            google: serverEnv.googleSiteVerification,
         },
 
         // App-specific metadata

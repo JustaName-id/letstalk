@@ -75,10 +75,6 @@ export const metadata: Metadata = {
     bingbot: "index,follow",
   },
 
-  verification: {
-    google: serverEnv.googleSiteVerification,
-  },
-
   applicationName: "Let's Talk",
   referrer: "origin-when-cross-origin",
 
