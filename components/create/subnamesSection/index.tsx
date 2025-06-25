@@ -1,4 +1,4 @@
-import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
+import { DrawerTitle } from "@/components/ui/drawer";
 import { clientEnv } from "@/utils/config/clientEnv";
 import { useAccountEnsNames, useAccountSubnames, useAddSubname, useIsSubnameAvailable } from "@justaname.id/react";
 import { useEffect, useMemo, useState } from "react";
@@ -6,6 +6,7 @@ import { useAccount, useDisconnect } from "wagmi";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { EnsCard } from "./ensCard";
+import {Dialog, DialogContent} from "@/components/ui/dialog";
 
 export interface SubnamesSectionProps {
     onEnsSelect: (ens: { name: string, new: boolean }) => void;
@@ -46,11 +47,11 @@ export const SubnamesSection = ({ onEnsSelect, onEnsDrawerOpen, ensDrawerOpen }:
         }
         const combined = [];
 
-        const letsTalkSubname = accountSubnames.find(subname => subname.ens.endsWith(`${clientEnv.justaNameEns}`));
+        const letsTalkSubname = accountSubnames.filter(subname => subname.ens.endsWith(`${clientEnv.justaNameEns}`));
         if(letsTalkSubname) {
-            combined.push(letsTalkSubname);
+            combined.push(...letsTalkSubname);
         }
-        const accountSubnamesWithoutLetsTalk = accountSubnames.filter(subname => subname.ens !== letsTalkSubname?.ens);
+        const accountSubnamesWithoutLetsTalk = accountSubnames.filter(subname => !subname.ens.endsWith(`${clientEnv.justaNameEns}`));
         combined.push(...accountSubnamesWithoutLetsTalk);
         combined.push(...accountEnsNames);
         const uniqueSubnames = combined.filter((subname, index, array) =>
@@ -62,12 +63,12 @@ export const SubnamesSection = ({ onEnsSelect, onEnsDrawerOpen, ensDrawerOpen }:
     const handleClaim = () => {
         if (isAddSubnamePending) return;
         addSubname({
-            username: debouncedUsername,
+            username: debouncedUsername.toLowerCase(),
             chainId: clientEnv.chainId,
             ensDomain: clientEnv.justaNameEns,
         }, {
             onSuccess: () => {
-                onEnsSelect({ name: `${debouncedUsername}.${clientEnv.justaNameEns}`, new: true });
+                onEnsSelect({ name: `${debouncedUsername.toLowerCase()}.${clientEnv.justaNameEns}`, new: true });
                 setUsername("");
             }
         });
@@ -79,12 +80,12 @@ export const SubnamesSection = ({ onEnsSelect, onEnsDrawerOpen, ensDrawerOpen }:
     }
 
     return (
-        <Drawer open={ensDrawerOpen} onOpenChange={onEnsDrawerOpen}>
-            <DrawerContent aria-describedby={undefined} >
+        <Dialog open={ensDrawerOpen} onOpenChange={onEnsDrawerOpen}>
+            <DialogContent aria-describedby={undefined} >
                 <div className="hidden">
                     <DrawerTitle></DrawerTitle>
                 </div>
-                <div className="flex flex-1 flex-col p-5 h-full w-full gap-5">
+                <div className="flex flex-1 flex-col p-5 h-full w-full gap-5 justify-between">
                     <div>
                         <h1 style={{
                             lineHeight: "110%"
@@ -96,7 +97,7 @@ export const SubnamesSection = ({ onEnsSelect, onEnsDrawerOpen, ensDrawerOpen }:
                             <p className="text-foreground text-xl font-normal leading-[100%]">Claim a Subname</p>
                             <div className="flex flex-col gap-1 w-full transition-all duration-500 ease-in-out">
                                 <div className="flex flex-row gap-2 justify-between">
-                                    <Input placeholder="Enter a subname" disabled={isAddSubnamePending} className="w-full" rightText={`.${clientEnv.justaNameEns}`} containerClassName="w-full" value={username} onChange={(e) => setUsername(e.target.value)} />
+                                    <Input placeholder="subname" disabled={isAddSubnamePending} className="w-full" rightText={`.${clientEnv.justaNameEns}`} containerClassName="w-full" value={username} onChange={(e) => setUsername(e.target.value.toLowerCase())} />
                                     <Button variant={"default"} disabled={isSubnameAvailablePending || !isSubnameAvailable?.isAvailable || isAddSubnamePending} onClick={handleClaim}>{isAddSubnamePending ? "Claiming..." : "Claim"}</Button>
                                 </div>
                                 {!isSubnameAvailable?.isAvailable && !isSubnameAvailablePending && (
@@ -113,7 +114,7 @@ export const SubnamesSection = ({ onEnsSelect, onEnsDrawerOpen, ensDrawerOpen }:
                         </div>
                         <div className="flex flex-col gap-3 w-full">
                             <p className="text-foreground text-xl font-normal leading-[100%]">{`Your ENS names`}</p>
-                            <div className="flex flex-col gap-2 max-h-[32vh] overflow-y-auto w-full">
+                            <div className="flex flex-col gap-2 max-h-[30dvh] overflow-y-auto w-full">
                                 {
                                     allSubnames.length > 0 ?
                                         allSubnames.map((subname) => (
@@ -126,13 +127,15 @@ export const SubnamesSection = ({ onEnsSelect, onEnsDrawerOpen, ensDrawerOpen }:
                                 }
                             </div>
                         </div>
-                        <div className="flex flex-row gap-[15px] justify-between items-center w-full">
+                        <div className="flex flex-row gap-[15px] mt-auto justify-between items-center">
                             <Button variant={"secondary"} onClick={onDisconnect}>Disconnect</Button>
-                            <p className="text-border text-xs font-bold leading-[133%] text-ellipsis overflow-hidden whitespace-nowrap">{address}</p>
+                            {/*<div className="flex flex-row gap-2 items-center">*/}
+                                <span className="text-border text-xs font-bold text-ellipsis  whitespace-nowrap">{(address || "").slice(0,12)}...{(address || "").slice(32,44)}</span>
+                            {/*</div>*/}
                         </div>
                     </div>
                 </div>
-            </DrawerContent>
-        </Drawer>
+            </DialogContent>
+        </Dialog>
     )
 }

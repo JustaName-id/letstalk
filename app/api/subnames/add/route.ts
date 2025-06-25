@@ -11,17 +11,17 @@ export const POST = async (req: NextRequest) => {
     }
 
     const justaname = getJustaname();
+    //
+    // const existingNames = await justaname.subnames.getSubnamesByAddress({
+    //   address,
+    //   isClaimed: true,
+    //   chainId: serverEnv.chainId,
+    //   coinType: 60,
+    // });
   
-    const existingNames = await justaname.subnames.getSubnamesByAddress({
-      address,
-      isClaimed: true,
-      chainId: serverEnv.chainId,
-      coinType: 60,
-    });
-  
-    if (existingNames.subnames.find((name) => name.ens.endsWith(`.${normalize(ensDomain)}`))) {
-      return NextResponse.json({ message: "Address already claimed" }, { status: 400 });
-    }
+    // if (existingNames.subnames.find((name) => name.ens.endsWith(`.${normalize(ensDomain)}`))) {
+    //   return NextResponse.json({ message: "Address already claimed" }, { status: 400 });
+    // }
   
     try {
       const result = await justaname.subnames.addSubname(
@@ -32,6 +32,7 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json(result);
 
     } catch (error) {
+        console.log(error);
       return NextResponse.json({ error: error instanceof Error ? error.message : "Error" }, { status: 500 });
     }
 };

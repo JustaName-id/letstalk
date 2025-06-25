@@ -4,7 +4,7 @@ import { ImagePlusIcon } from '@/lib/icons';
 import { clientEnv } from '@/utils/config/clientEnv';
 import { useUploadMedia } from '@justaname.id/react';
 import React from 'react';
-import { Cropper, CropperRef } from 'react-advanced-cropper';
+import {Cropper, CropperRef, ImageRestriction} from 'react-advanced-cropper';
 import 'react-advanced-cropper/dist/style.css';
 
 export interface BannerEditorDialogProps {
@@ -14,10 +14,10 @@ export interface BannerEditorDialogProps {
 }
 
 export const BannerEditorDialog: React.FC<BannerEditorDialogProps> = ({
-    onImageChange,
-    banner,
-    subname,
-}) => {
+                                                                          onImageChange,
+                                                                          banner,
+                                                                          subname,
+                                                                      }) => {
     const [isEditorOpen, setIsEditorOpen] = React.useState(false);
     const [imageSrc, setImageSrc] = React.useState('');
     const cropperRef = React.useRef<CropperRef>(null);
@@ -41,61 +41,143 @@ export const BannerEditorDialog: React.FC<BannerEditorDialogProps> = ({
 
     const handleSave = async () => {
         const cropper = cropperRef.current;
-        if (cropper) {
-            const canvas = cropper.getCanvas();
-            if (canvas) {
+        if (!cropper) return;
+
+        // Use getCoordinates and getVisibleArea for more reliable cropping
+        const coordinates = cropper.getCoordinates();
+        const visibleArea = cropper.getVisibleArea();
+
+        if (!coordinates || !visibleArea) {
+            console.error('Could not get crop coordinates');
+            return;
+        }
+
+        // Create canvas manually for better control
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        if (!ctx) {
+            console.error('Could not get canvas context');
+            return;
+        }
+
+        // Load the original image
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+
+        img.onload = async () => {
+            try {
+                // Set canvas size to match crop area
+                canvas.width = coordinates.width;
+                canvas.height = coordinates.height;
+
+                // Draw the cropped portion
+                ctx.drawImage(
+                    img,
+                    coordinates.left,
+                    coordinates.top,
+                    coordinates.width,
+                    coordinates.height,
+                    0,
+                    0,
+                    coordinates.width,
+                    coordinates.height
+                );
+
+                // Convert to blob with quality control
                 canvas.toBlob(async (blob: Blob | null) => {
-                    if (!blob) return;
+                    if (!blob) {
+                        console.error('Could not create blob from canvas');
+                        return;
+                    }
+
+                    let finalBlob: Blob | null = blob;
+
+                    // Handle large files by resizing with banner-specific dimensions
                     if (blob.size > 3000000) {
                         const resizedCanvas = document.createElement('canvas');
-                        const resizedContext = resizedCanvas.getContext('2d');
-                        if (!resizedContext) return;
+                        const resizedCtx = resizedCanvas.getContext('2d');
+                        if (!resizedCtx) return;
+
                         const MAX_WIDTH = 1500;
                         const MAX_HEIGHT = 500;
-                        const width = canvas.width;
-                        const height = canvas.height;
-                        if (width > height) {
-                            resizedCanvas.width = MAX_WIDTH;
-                            resizedCanvas.height = (MAX_WIDTH * height) / width;
-                        } else {
-                            resizedCanvas.height = MAX_HEIGHT;
-                            resizedCanvas.width = (MAX_HEIGHT * width) / height;
-                        }
-                        resizedContext.drawImage(canvas, 0, 0, resizedCanvas.width, resizedCanvas.height);
-                        resizedCanvas.toBlob(async (resizedBlob) => {
-                            if (!resizedBlob) return;
-                            const formData = new FormData();
-                            formData.append('file', resizedBlob);
-                            try {
-                                const response = await uploadMedia({ form: formData });
-                                onImageChange(response.url);
-                                setIsEditorOpen(false);
-                                return;
-                            } catch (error) {
-                                console.error('Upload error', error);
-                                return;
-                            }
-                        });
-                    }
-                    else {
-                        const formData = new FormData();
-                        formData.append('file', blob);
+                        let { width, height } = canvas;
 
-                        try {
-                            const response = await uploadMedia({ form: formData });
-                            onImageChange(response.url);
-                            setIsEditorOpen(false);
-                        } catch (error) {
-                            console.error('Upload error', error);
+                        // Calculate new dimensions maintaining aspect ratio for banner
+                        const aspectRatio = width / height;
+                        if (aspectRatio > 3) {
+                            // Wide banner
+                            if (width > MAX_WIDTH) {
+                                width = MAX_WIDTH;
+                                height = width / aspectRatio;
+                            }
+                        } else {
+                            // Tall or square banner
+                            if (height > MAX_HEIGHT) {
+                                height = MAX_HEIGHT;
+                                width = height * aspectRatio;
+                            }
                         }
+
+                        resizedCanvas.width = width;
+                        resizedCanvas.height = height;
+
+                        // Use better image smoothing
+                        resizedCtx.imageSmoothingEnabled = true;
+                        resizedCtx.imageSmoothingQuality = 'high';
+                        resizedCtx.drawImage(canvas, 0, 0, width, height);
+
+                        // Convert resized canvas to blob
+                        const resizedBlobPromise = new Promise<Blob | null>((resolve) => {
+                            resizedCanvas.toBlob(resolve, 'image/jpeg', 0.9);
+                        });
+
+                        finalBlob = await resizedBlobPromise;
+                        if (!finalBlob) return;
                     }
-                });
+
+                    // Upload the final blob
+                    const formData = new FormData();
+                    formData.append('file', finalBlob);
+
+                    try {
+                        const response = await uploadMedia({ form: formData });
+                        onImageChange(response.url);
+                        setIsEditorOpen(false);
+                        // Clear the file input
+                        if (fileInputRef.current) {
+                            fileInputRef.current.value = '';
+                        }
+                    } catch (error) {
+                        console.error('Upload error:', error);
+                    }
+                }, 'image/jpeg', 0.9);
+
+            } catch (error) {
+                console.error('Error processing image:', error);
             }
-        }
+        };
+
+        img.onerror = () => {
+            console.error('Error loading image for cropping');
+        };
+
+        img.src = imageSrc;
     };
 
     const handleButtonClick = () => {
         fileInputRef.current?.click();
+    };
+
+    const handleDialogClose = (open: boolean) => {
+        setIsEditorOpen(open);
+        if (!open) {
+            // Clear image source when closing
+            setImageSrc('');
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
     };
 
     return (
@@ -116,7 +198,7 @@ export const BannerEditorDialog: React.FC<BannerEditorDialogProps> = ({
                 <input
                     name='banner-selector-input'
                     type="file"
-                    accept="image/jpeg, image/png, image/heic, image/heif, image/gif, image/avif"
+                    accept="image/jpeg,image/png,image/heic,image/heif,image/gif,image/avif,image/webp"
                     onChange={handleImageChange}
                     style={{ display: 'none' }}
                     ref={fileInputRef}
@@ -125,54 +207,64 @@ export const BannerEditorDialog: React.FC<BannerEditorDialogProps> = ({
 
             <Dialog
                 open={isEditorOpen}
-                onOpenChange={(open: boolean) => {
-                    setIsEditorOpen(open);
-                }}
+                onOpenChange={handleDialogClose}
             >
-                <div style={{ display: 'hidden' }}>
-                    <DialogTitle className='hidden'>Crop Banner</DialogTitle>
+                <div style={{ display: 'none' }}>
+                    <DialogTitle>Crop Banner Image</DialogTitle>
                 </div>
-                <DialogContent aria-describedby={undefined} className="w-full h-fit max-h-[600px]">
-                    <div className="w-full h-fit pt-5">
+                <DialogContent
+                    aria-describedby={undefined}
+                    className="w-full max-w-4xl mx-auto p-4"
+                    style={{ maxHeight: '90vh', overflow: 'hidden' }}
+                >
+                    <div className="w-full flex flex-col items-center space-y-4">
                         {imageSrc && (
-                            <Cropper
-                                ref={cropperRef}
-                                src={imageSrc}
-                                className="h-[300px] w-[300px]"
-                                stencilProps={{
-                                    aspectRatio: 3,
-                                }}
-                                backgroundClassName="bg-gray-100"
-                                canvas={true}
-                                checkOrientation={false}
-                                transitions={true}
-                            />
+                            <div className="w-full max-w-[600px]" style={{ aspectRatio: '3/1' }}>
+                                <Cropper
+                                    ref={cropperRef}
+                                    src={imageSrc}
+                                    className="w-full h-full"
+                                    stencilProps={{
+                                        aspectRatio: 3,
+                                        movable: true,
+                                        resizable: true,
+                                        lines: true,
+                                        handlers: true,
+                                    }}
+                                    // stencilSize={{
+                                    //     width: 600,
+                                    //     height: 200,
+                                    // }}
+                                    imageRestriction={ImageRestriction.stencil}
+                                    checkOrientation={true}
+                                    // canvas={{
+                                    //     width: 1200,
+                                    //     height: 400,
+                                    // }}
+                                    transitions={true}
+                                />
+                            </div>
                         )}
-                    </div>
-                    <div className='flex flex-row gap-2.5 mt-4'>
-                        <Button
-                            type="button"
-                            variant="secondary"
-                            onClick={() => {
-                                if (fileInputRef.current) {
-                                    fileInputRef.current.value = '';
-                                }
-                                setIsEditorOpen(false);
-                            }}
-                            className="flex-1"
-                            disabled={isUploadPending}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            type="button"
-                            onClick={handleSave}
-                            variant="default"
-                            className="flex-1"
-                            disabled={isUploadPending}
-                        >
-                            {isUploadPending ? "Uploading..." : "Upload"}
-                        </Button>
+                        <div className='flex flex-row gap-2.5 w-full max-w-md'>
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={() => handleDialogClose(false)}
+                                className="flex-1"
+                                disabled={isUploadPending}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="button"
+                                onClick={handleSave}
+                                variant="default"
+                                className="flex-1"
+                                disabled={isUploadPending}
+                            >
+                                {isUploadPending ? 'Uploading...' : 'Upload'}
+                            </Button>
+                        </div>
                     </div>
                 </DialogContent>
             </Dialog>

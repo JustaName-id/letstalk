@@ -4,7 +4,7 @@ import { Providers } from "./providers";
 import "./globals.css";
 
 const inter = Inter({
-  variable: "--font-inter",
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} antialiased`}
+        className={`${inter.variable} font-sans antialiased`}
       >
         <Providers>
           <main className="h-[100dvh]">

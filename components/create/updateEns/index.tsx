@@ -1,4 +1,4 @@
-import { Drawer, DrawerContent, DrawerTitle } from "@/components/ui/drawer";
+import { DrawerTitle } from "@/components/ui/drawer";
 import { getSocials } from "@/lib/helpers";
 import { DiscordIcon, GithubIcon, GlobeIcon, TelegramIcon, XIcon } from "@/lib/icons";
 import { fieldToRecordKeyMap, transformToKeyValuePairs, UpdateEnsFormData, updateEnsSchema } from "@/types/form";
@@ -13,6 +13,8 @@ import { Form } from "../../ui/form";
 import { FormInputField } from "../../ui/form-input-field";
 import { AvatarEditorDialog } from "./avatarSelectorDialog";
 import { BannerEditorDialog } from "./bannerSelectorDialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+
 export interface UpdateEnsSectionProps {
     subname: {
         name: string;
@@ -101,19 +103,31 @@ export const UpdateEnsSection = ({ subname, onUpdateDrawerOpen, updateDrawerOpen
     };
 
     return (
-        <Drawer open={updateDrawerOpen} onOpenChange={onUpdateDrawerOpen}>
-            <DrawerContent aria-describedby={undefined} >
+        <Dialog open={updateDrawerOpen} onOpenChange={onUpdateDrawerOpen}>
+            <DialogContent
+                aria-describedby={undefined}
+                // className="max-w-md mx-auto max-h-[90vh] overflow-hidden flex flex-col"
+                onOpenAutoFocus={(e) => e.preventDefault()}
+            >
                 <div className="hidden">
                     <DrawerTitle></DrawerTitle>
                 </div>
                 <div className="flex flex-col w-full p-5 h-full gap-0 overflow-y-auto">
-                    <div className="flex flex-col gap-2.5">
-                        <h1 className="text-foreground text-[30px] font-normal leading-[100%]">Update Your ENS Profile</h1>
-                        <p className="text-xs text-muted-foreground font-normal leading-[133%]">Fill in your profile information for your ENS business card.</p>
+                    <div className="flex flex-col gap-2.5 flex-shrink-0">
+                        <h1 className="text-foreground text-[30px] font-normal leading-[100%]">
+                            Update Your ENS Profile
+                        </h1>
+                        <p className="text-xs text-muted-foreground font-normal leading-[133%]">
+                            Fill in your profile information for your ENS business card.
+                        </p>
                     </div>
 
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="flex h-full mt-10 flex-col justify-start gap-5">
+                        <form
+                            onSubmit={form.handleSubmit(onSubmit)}
+                            className="flex h-full mt-10 flex-col justify-start gap-5"
+                            autoComplete="off"
+                        >
                             <div className="flex flex-col gap-2.5">
                                 <div className="flex flex-row w-full gap-2.5 items-center">
                                     <AvatarEditorDialog
@@ -132,17 +146,26 @@ export const UpdateEnsSection = ({ subname, onUpdateDrawerOpen, updateDrawerOpen
                                         control={form.control}
                                         name="display"
                                         placeholder="Display Name"
+                                        type={"text"}
+                                        // @ts-expect-error the componet should support generics
+                                        autoFocus={false}
+                                        tabIndex={-1}
                                     />
                                     <FormInputField
                                         control={form.control}
                                         name="description"
                                         placeholder="Bio"
                                         type="textarea"
+                                        // @ts-expect-error the componet should support generics
+                                        autoFocus={false}
+                                        tabIndex={-1}
                                     />
                                 </div>
                             </div>
                             <div className="flex flex-col gap-2.5 w-full">
-                                <p className="text-xl text-foreground font-normal leading-[100%]">Add Your Metadata</p>
+                                <p className="text-xl text-foreground font-normal leading-[100%]">
+                                    Add Your Metadata
+                                </p>
                                 <div className="flex flex-row gap-2 w-full items-center">
                                     <GlobeIcon width={24} height={24} />
                                     <FormInputField
@@ -150,6 +173,9 @@ export const UpdateEnsSection = ({ subname, onUpdateDrawerOpen, updateDrawerOpen
                                         control={form.control}
                                         name="url"
                                         placeholder="Website"
+                                        // @ts-expect-error the componet should support generics
+                                        autoFocus={false}
+                                        tabIndex={-1}
                                     />
                                 </div>
                                 <div className="flex flex-row gap-2 w-full items-center">
@@ -159,6 +185,9 @@ export const UpdateEnsSection = ({ subname, onUpdateDrawerOpen, updateDrawerOpen
                                         control={form.control}
                                         name="telegram"
                                         placeholder="Telegram"
+                                        // @ts-expect-error the componet should support generics
+                                        autoFocus={false}
+                                        tabIndex={-1}
                                     />
                                 </div>
 
@@ -169,6 +198,9 @@ export const UpdateEnsSection = ({ subname, onUpdateDrawerOpen, updateDrawerOpen
                                         control={form.control}
                                         name="x"
                                         placeholder="X/Twitter"
+                                        // @ts-expect-error the componet should support generics
+                                        autoFocus={false}
+                                        tabIndex={-1}
                                     />
                                 </div>
                                 <div className="flex flex-row gap-2 w-full items-center">
@@ -178,6 +210,9 @@ export const UpdateEnsSection = ({ subname, onUpdateDrawerOpen, updateDrawerOpen
                                         control={form.control}
                                         name="github"
                                         placeholder="Github"
+                                        // @ts-expect-error the componet should support generics
+                                        autoFocus={false}
+                                        tabIndex={-1}
                                     />
                                 </div>
                                 <div className="flex flex-row gap-2 w-full items-center">
@@ -187,11 +222,14 @@ export const UpdateEnsSection = ({ subname, onUpdateDrawerOpen, updateDrawerOpen
                                         control={form.control}
                                         name="discord"
                                         placeholder="Discord"
+                                        // @ts-expect-error the componet should support generics
+                                        autoFocus={false}
+                                        tabIndex={-1}
                                     />
                                 </div>
                             </div>
 
-                            <div className="flex mt-auto flex-row gap-4 justify-between items-center">
+                            <div className="flex mt-auto flex-row gap-4 justify-between items-center flex-shrink-0 pt-4">
                                 <Button
                                     type="button"
                                     variant="secondary"
@@ -209,7 +247,7 @@ export const UpdateEnsSection = ({ subname, onUpdateDrawerOpen, updateDrawerOpen
                         </form>
                     </Form>
                 </div>
-            </DrawerContent>
-        </Drawer>
+            </DialogContent>
+        </Dialog>
     );
 };
