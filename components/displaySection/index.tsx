@@ -13,6 +13,7 @@ import { UpdateEnsSection } from "../create/updateEns";
 import { DisplayCardSkeleton } from "../displayCard/skeleton";
 import { SearchBar } from "./SearchBar";
 import Link from "next/link";
+
 export interface DisplaySectionProps {
     ens: string;
     className?: string;
@@ -49,6 +50,44 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
         return checkIfMyCard(records?.records.resolverAddress ?? "", offchainResolvers);
     }, [isOffchainResolversPending, offchainResolvers, walletAddress, address, records?.records.resolverAddress])
 
+    // Enhanced share content based on profile data
+    const shareContent = useMemo(() => {
+        if (!sanitizedRecords) {
+            return {
+                title: `${ens} - ENS Profile`,
+                text: `Check out ${ens}'s ENS profile on Let's Talk!`
+            };
+        }
+
+        const displayName = sanitizedRecords.display || ens;
+        const hasRole = sanitizedRecords.description ?
+            sanitizedRecords.description.toLowerCase().includes('developer') ? ' Developer' :
+                sanitizedRecords.description.toLowerCase().includes('designer') ? ' Designer' :
+                    sanitizedRecords.description.toLowerCase().includes('founder') ? ' Founder' :
+                        sanitizedRecords.description.toLowerCase().includes('ceo') ? ' CEO' :
+                            sanitizedRecords.description.toLowerCase().includes('engineer') ? ' Engineer' :
+                                '' : '';
+
+        // Create personalized share messages
+        const title = sanitizedRecords.display ?
+            `${displayName} (${ens}) - Professional ENS Profile` :
+            `${ens} - ENS Business Card`;
+
+        let text = '';
+        if (sanitizedRecords.description) {
+            const shortBio = sanitizedRecords.description.length > 80 ?
+                sanitizedRecords.description.substring(0, 80) + '...' :
+                sanitizedRecords.description;
+            text = `Connect with ${displayName}${hasRole} on Web3! ${shortBio} View their complete ENS profile:`;
+        } else if (sanitizedRecords.display) {
+            text = `Connect with ${displayName}${hasRole} on the blockchain! Check out their professional ENS business card:`;
+        } else {
+            text = `Check out ${ens}'s professional ENS profile and Web3 identity:`;
+        }
+
+        return { title, text };
+    }, [sanitizedRecords, ens]);
+
     const handleShare = async (e: React.MouseEvent) => {
         e.stopPropagation();
         const url = `${clientEnv.websiteUrl}/${ens}`;
@@ -56,17 +95,27 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
         if (navigator.share) {
             try {
                 await navigator.share({
-                    title: `${ens} - ENS Card`,
-                    text: `Check out ${ens}'s ENS card!`,
+                    title: shareContent.title,
+                    text: shareContent.text,
                     url: url
                 });
             } catch (error) {
                 if (error instanceof Error && error.name !== 'AbortError') {
-                    navigator.clipboard.writeText(url);
+                    // Fallback to clipboard with enhanced message
+                    const fallbackText = `${shareContent.text} ${url}`;
+                    navigator.clipboard.writeText(fallbackText);
+
+                    // Optional: Show a toast notification here
+                    console.log('Link copied to clipboard!');
                 }
             }
         } else {
-            navigator.clipboard.writeText(url);
+            // Enhanced clipboard fallback
+            const fallbackText = `${shareContent.text} ${url}`;
+            navigator.clipboard.writeText(fallbackText);
+
+            // Optional: Show a toast notification here
+            console.log('Link copied to clipboard!');
         }
     }
 
@@ -76,7 +125,6 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
             setSubnameDrawerOpen(false);
         }
     }
-
 
     return (
         <div onClick={() => !subnameDrawerOpen && !selectedSubname && setIsCardFlipped(!isCardFlipped)} className={`flex flex-col h-[calc(100dvh-8px)] p-4 py-2  max-w-[700px] min-[700px]:mx-auto justify-between items-center relative  ${className}`}>
@@ -121,10 +169,10 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
                 </div>
             ) : (
                 !records ? (
-                    <div className="relative translate-y-[-20px] z-10 w-full">
-                        <p className="text-muted-foreground text-center text-[30px] font-normal leading-[90%]">ENS name: {ens} not found or has no records.</p>
-                    </div>
-                ) :
+                        <div className="relative translate-y-[-20px] z-10 w-full">
+                            <p className="text-muted-foreground text-center text-[30px] font-normal leading-[90%]">ENS name: {ens} not found or has no records.</p>
+                        </div>
+                    ) :
                     sanitizedRecords && (
                         <div className="relative translate-y-[-20px] z-10 w-full">
                             <DisplayCard subname={sanitizedRecords} ens={ens} isCardFlipped={isCardFlipped} />
