@@ -8,7 +8,7 @@ import { argentWallet, ledgerWallet, trustWallet } from "@rainbow-me/rainbowkit/
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { http, WagmiProvider } from "wagmi";
 import { mainnet, sepolia, base } from "wagmi/chains";
-import {OnchainKitProvider} from "@coinbase/onchainkit";
+// import {OnchainKitProvider} from "@coinbase/onchainkit";
 
 const { wallets } = getDefaultWallets();
 
@@ -49,19 +49,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
     return (
         <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
-                <OnchainKitProvider chain={base}
+                {/* <OnchainKitProvider chain={base}
                                     config={{
                                         appearance: {
                                             mode: 'auto',
                                             theme: 'base',
                                         },
-                                    }}>
-                    <RainbowKitProvider>
-                        <JustaNameProvider config={justaNameConfig}>
-                            {children}
-                        </JustaNameProvider>
-                    </RainbowKitProvider>
-                </OnchainKitProvider>
+                                    }}> */}
+                <RainbowKitProvider>
+                    <JustaNameProvider config={justaNameConfig}>
+                        {children}
+                    </JustaNameProvider>
+                </RainbowKitProvider>
+                {/* </OnchainKitProvider> */}
             </QueryClientProvider>
         </WagmiProvider>
     );

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { EFPIcon } from "@/lib/icons";
-import { useStats, getStats } from "@justweb3/efp-plugin";
+import { useStats } from "@justweb3/efp-plugin";
 import Link from "next/link";
 import { useMemo } from "react";
 export interface EfpCardProps {
@@ -40,8 +40,8 @@ export const EfpCard = ({ ens, display }: EfpCardProps) => {
                 </div>
             </div>
             {!isStatsLoading && stats ? (
-                <Link unselectable="on" href={`https://efp.app/${ens}`} target="_blank">
-                    <Button variant={"secondary"} size={"sm"}>
+                <Link onClick={(e) => e.stopPropagation()} unselectable="on" href={`https://efp.app/${ens}`} target="_blank">
+                    <Button variant={"outline"} size={"sm"}>
                         <div className="flex flex-row gap-2 items-center">
                             <EFPIcon />
                             Follow

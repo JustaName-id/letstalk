@@ -90,7 +90,7 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
 
             <div className="flex flex-row pointer-events-auto !z-[20] w-full items-center justify-between gap-2">
                 <div className="flex flex-row items-center gap-2 w-full">
-                    <SearchBar onlyIcon onActiveChange={setIsSearchActive} isSearchActive={isSearchActive}  />
+                    <SearchBar onlyIcon onActiveChange={setIsSearchActive} isSearchActive={isSearchActive} />
                     <div style={{ display: isSearchActive ? "none" : "block", maxWidth: isSearchActive ? 0 : "100%", pointerEvents: isSearchActive ? 'none' : 'auto' }}>
                         <Link href="/">
                             <LetsTalkIcon />
@@ -139,35 +139,37 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
                     <p className="text-base text-gray-500 from-gradient-1-start bg-clip-text leading-[90%]">Connect your wallet, select your ENS, and edit your card!</p>
                 </div>
             ) : (
-                <div style={{
-                    transform: "translateY(-40px)"
-                }} className="flex flex-col gap-2 w-full">
-                    <p className="text-base text-center text-gray-500 from-gradient-1-start bg-clip-text">Click to see the back!</p>
-                    <div className="flex flex-row gap-4 items-center justify-center">
-                        <Button variant={"secondary"} onClick={handleShare}>
-                            <div className="flex flex-row gap-2 items-center">
-                                <ShareIcon />
-                                Share
-                            </div>
-                        </Button>
-                        {isMyCard && (
-                            <Button asChild variant={"secondary"} onClick={(e) => {
-                                e.stopPropagation();
-                                if (!isConnected) {
-                                    openConnectModal?.()
-                                } else {
-                                    setSelectedSubname({ name: ens, new: false });
-                                    setSubnameDrawerOpen(true);
-                                }
-                            }}>
+                records ? (
+                    <div style={{
+                        transform: "translateY(-40px)"
+                    }} className="flex flex-col gap-2 w-full">
+                        <p className="text-base text-center text-gray-500 from-gradient-1-start bg-clip-text">Click to see the back!</p>
+                        <div className="flex flex-row gap-4 items-center justify-center">
+                            <Button variant={"secondary"} onClick={handleShare}>
                                 <div className="flex flex-row gap-2 items-center">
-                                    <PenIcon />
-                                    {"Edit"}
+                                    <ShareIcon />
+                                    Share
                                 </div>
                             </Button>
-                        )}
+                            {isMyCard && (
+                                <Button asChild variant={"secondary"} onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (!isConnected) {
+                                        openConnectModal?.()
+                                    } else {
+                                        setSelectedSubname({ name: ens, new: false });
+                                        setSubnameDrawerOpen(true);
+                                    }
+                                }}>
+                                    <div className="flex flex-row gap-2 items-center">
+                                        <PenIcon />
+                                        {"Edit"}
+                                    </div>
+                                </Button>
+                            )}
+                        </div>
                     </div>
-                </div>
+                ) : <div></div>
             )}
             {isConnected && !selectedSubname &&
                 <SubnamesSection onEnsSelect={setSelectedSubname} onEnsDrawerOpen={setSubnameDrawerOpen} ensDrawerOpen={subnameDrawerOpen} />

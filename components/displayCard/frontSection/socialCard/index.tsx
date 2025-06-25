@@ -9,7 +9,7 @@ export interface SocialCardProps {
     className?: string;
 }
 
-export const SocialCard = ({ name, value, horizontal = false, className }: SocialCardProps) => {
+export const SocialCard = ({ name, value, horizontal = false, className = "" }: SocialCardProps) => {
 
     const Icon = useMemo(() => {
         switch (name) {
@@ -43,36 +43,19 @@ export const SocialCard = ({ name, value, horizontal = false, className }: Socia
         }
     }, [name, value])
 
-    const handleClick = (e: React.MouseEvent) => {
-        e.stopPropagation();
-    };
-
-    const content = (
-        <>
+    return (
+        <div
+            className={`flex flex-col p-2.5 pointer-events-auto gap-1 ${horizontal ? "flex-row" : "flex-col"} bg-sidebar-background rounded-[6px] ${className}`}
+        >
             {Icon}
             <div className="flex flex-col gap-0.5 text-secondary-foreground">
                 <p className="text-xs font-bold leading-[100%] ">{name}</p>
-                <p className="text-sm font-normal leading-[150%] text-ellipsis overflow-hidden whitespace-nowrap max-w-[50vw]">{value ?? "N/A"}</p>
+                {value ? (
+                    <Link href={url ?? ""} target="_blank" className="text-sm cursor-pointer underline font-normal leading-[150%] text-ellipsis overflow-hidden whitespace-nowrap max-w-[50vw]">{value}</Link>
+                ) : (
+                    <p className="text-sm font-normal leading-[150%] text-ellipsis overflow-hidden whitespace-nowrap max-w-[50vw]">N/A</p>
+                )}
             </div>
-        </>
-    )
-
-    if (!value) {
-        return (
-            <div className={`flex flex-col p-2.5 pointer-events-auto gap-1 ${horizontal ? "flex-row" : "flex-col"} bg-sidebar-background rounded-[6px] ${className}`}>
-                {content}
-            </div>
-        )
-    }
-
-    return (
-        <Link
-            target={!value ? undefined : "_blank"}
-            href={url ?? ""}
-            onClick={handleClick}
-            className={`flex flex-col p-2.5 pointer-events-auto gap-1 cursor-pointer ${horizontal ? "flex-row" : "flex-col"} bg-sidebar-background rounded-[6px] ${className}`}
-        >
-            {content}
-        </Link>
+        </div>
     )
 }

@@ -20,7 +20,7 @@ interface SearchBarProps {
 export const SearchBar = ({ onActiveChange, isSearchActive, onlyIcon }: SearchBarProps) => {
     const searchInputRef = useRef<HTMLInputElement>(null);
     const [searchValue, setSearchValue] = useState("")
-    const [debouncedValue] = useDebounceValue(searchValue, 150)
+    const [debouncedValue] = useDebounceValue(searchValue.toLowerCase(), 150)
 
     const shouldFetchData = debouncedValue.length > 2;
 
@@ -74,7 +74,7 @@ export const SearchBar = ({ onActiveChange, isSearchActive, onlyIcon }: SearchBa
                 shouldShow: true
             });
         }
-        
+
         const shouldShowBox = !debouncedValue.includes('.box') && isBoxRegistered && !isBoxLoading;
         if (shouldShowBox) {
             domains.push({
@@ -168,7 +168,7 @@ export const SearchBar = ({ onActiveChange, isSearchActive, onlyIcon }: SearchBa
     };
 
     const handleSearchChange = (value: string) => {
-        setSearchValue(value);
+        setSearchValue(value.toLowerCase());
     };
 
     const handleItemSelect = (ens: string) => {
