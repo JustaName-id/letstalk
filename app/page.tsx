@@ -20,7 +20,6 @@ export const metadata: Metadata = {
   creator: "Let's Talk",
   publisher: "Let's Talk",
 
-  // Open Graph metadata
   openGraph: {
     type: "profile",
     title,
@@ -41,8 +40,8 @@ export const metadata: Metadata = {
   // Twitter metadata
   twitter: {
     card: "summary_large_image",
-    site: "@letstalk", // Replace with your Twitter handle
-    creator: "@letstalk", // Replace with your Twitter handle
+    site: "@justaname_id",
+    creator: "@justaname_id",
     title,
     description,
     images: [
@@ -62,13 +61,13 @@ export const metadata: Metadata = {
     "og:image:height": "630",
 
     // LinkedIn
-    "article:author": "Let's Talk",
+    "article:author": "just-a-lab",
 
     // Discord
     "theme-color": "#6366f1",
 
     // Telegram
-    "telegram:channel": "@letstalk", // Replace with your channel
+    "telegram:channel": "@justaname_id",
 
     // Additional SEO
     robots: "index,follow",
@@ -76,15 +75,10 @@ export const metadata: Metadata = {
     bingbot: "index,follow",
   },
 
-  // Verification and ownership
   verification: {
-    // Add your verification tokens here
-    // google: "your-google-verification-token",
-    // yandex: "your-yandex-verification-token",
-    // yahoo: "your-yahoo-verification-token",
+    google: serverEnv.googleSiteVerification,
   },
 
-  // App-specific metadata
   applicationName: "Let's Talk",
   referrer: "origin-when-cross-origin",
 

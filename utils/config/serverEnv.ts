@@ -8,6 +8,7 @@ const SERVER_ENV = {
   devMode: process.env.DEV === "true",
   justaNameApiKey: process.env.JUSTANAME_API_KEY,
   justaNameEnsDomain: process.env.JUSTANAME_ENS,
+  googleSiteVerification: process.env.GOOGLE_SITE_VERIFICATION,
 
 };
 
@@ -22,6 +23,7 @@ export const serverEnvSchema = z.object({
   devMode: z.boolean().default(false),
   justaNameApiKey: z.string(),
   justaNameEnsDomain: z.string(),
+  googleSiteVerification: z.string(),
 })
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

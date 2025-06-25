@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@coinbase/onchainkit": "^0.38.15",
     "@hookform/resolvers": "^5.1.1",
     "@justaname.id/react": "^0.3.202",
     "@justweb3/efp-plugin": "^0.1.98",

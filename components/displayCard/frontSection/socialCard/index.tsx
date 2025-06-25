@@ -51,7 +51,7 @@ export const SocialCard = ({ name, value, horizontal = false, className = "" }: 
             <div className="flex flex-col gap-0.5 text-secondary-foreground">
                 <p className="text-xs font-bold leading-[100%] ">{name}</p>
                 {value ? (
-                    <Link href={url ?? ""} target="_blank" className="text-sm cursor-pointer underline font-normal leading-[150%] text-ellipsis overflow-hidden whitespace-nowrap max-w-[50vw]">{value}</Link>
+                    <Link href={url ?? ""} onClick={(e) => e.stopPropagation()} target="_blank" className="text-sm cursor-pointer underline font-normal leading-[150%] text-ellipsis overflow-hidden whitespace-nowrap max-w-[50vw]">{value}</Link>
                 ) : (
                     <p className="text-sm font-normal leading-[150%] text-ellipsis overflow-hidden whitespace-nowrap max-w-[50vw]">N/A</p>
                 )}
