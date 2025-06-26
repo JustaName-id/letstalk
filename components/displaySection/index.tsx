@@ -2,17 +2,17 @@
 import { DisplayCard } from "@/components/displayCard";
 import { Button } from "@/components/ui/button";
 import { checkIfMyCard } from "@/lib/helpers";
-import { LetsTalkIcon, PenIcon, ShareIcon, SparklesIcon } from "@/lib/icons";
+import { LetsTalkIcon, PenIcon, RotateIcon, SaveIcon, SparklesIcon } from "@/lib/icons";
 import { clientEnv } from "@/utils/config/clientEnv";
-import { useOffchainResolvers, useRecords } from "@justaname.id/react";
+import { useEnsAvatar, useOffchainResolvers, useRecords } from "@justaname.id/react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 import { SubnamesSection } from "../create/subnamesSection";
 import { UpdateEnsSection } from "../create/updateEns";
 import { DisplayCardSkeleton } from "../displayCard/skeleton";
 import { SearchBar } from "./SearchBar";
-import Link from "next/link";
 
 export interface DisplaySectionProps {
     ens: string;
@@ -23,6 +23,10 @@ export interface DisplaySectionProps {
 export const DisplaySection = ({ ens, className = "", homePage }: DisplaySectionProps) => {
     const { openConnectModal } = useConnectModal();
     const { isConnected, address: walletAddress } = useAccount();
+    const { avatar } = useEnsAvatar({
+        ens: ens,
+        chainId: clientEnv.chainId,
+    });
 
     const { records, isRecordsPending } = useRecords({
         ens: ens,
@@ -41,6 +45,7 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
         name: string;
         new: boolean;
     } | null>(null);
+    const [isCreatingCard, setIsCreatingCard] = useState(false);
     const { offchainResolvers, isOffchainResolversPending } =
         useOffchainResolvers();
 
@@ -50,72 +55,63 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
         return checkIfMyCard(records?.records.resolverAddress ?? "", offchainResolvers);
     }, [isOffchainResolversPending, offchainResolvers, walletAddress, address, records?.records.resolverAddress])
 
-    // Enhanced share content based on profile data
-    const shareContent = useMemo(() => {
-        if (!sanitizedRecords) {
-            return {
-                title: `${ens} - ENS Profile`,
-                text: `Check out ${ens}'s ENS profile on Let's Talk!`
-            };
-        }
-
-        const displayName = sanitizedRecords.display || ens;
-        const hasRole = sanitizedRecords.description ?
-            sanitizedRecords.description.toLowerCase().includes('developer') ? ' Developer' :
-                sanitizedRecords.description.toLowerCase().includes('designer') ? ' Designer' :
-                    sanitizedRecords.description.toLowerCase().includes('founder') ? ' Founder' :
-                        sanitizedRecords.description.toLowerCase().includes('ceo') ? ' CEO' :
-                            sanitizedRecords.description.toLowerCase().includes('engineer') ? ' Engineer' :
-                                '' : '';
-
-        // Create personalized share messages
-        const title = sanitizedRecords.display ?
-            `${displayName} (${ens}) - Professional ENS Profile` :
-            `${ens} - ENS Business Card`;
-
-        let text = '';
-        if (sanitizedRecords.description) {
-            const shortBio = sanitizedRecords.description.length > 80 ?
-                sanitizedRecords.description.substring(0, 80) + '...' :
-                sanitizedRecords.description;
-            text = `Connect with ${displayName}${hasRole} on Web3! ${shortBio} View their complete ENS profile:`;
-        } else if (sanitizedRecords.display) {
-            text = `Connect with ${displayName}${hasRole} on the blockchain! Check out their professional ENS business card:`;
-        } else {
-            text = `Check out ${ens}'s professional ENS profile and Web3 identity:`;
-        }
-
-        return { title, text };
-    }, [sanitizedRecords, ens]);
-
-    const handleShare = async (e: React.MouseEvent) => {
+    const handleSave = async (e: React.MouseEvent) => {
         e.stopPropagation();
-        const url = `${clientEnv.websiteUrl}/${ens}`;
 
-        if (navigator.share) {
-            try {
-                await navigator.share({
-                    title: shareContent.title,
-                    text: shareContent.text,
-                    url: url
-                });
-            } catch (error) {
-                if (error instanceof Error && error.name !== 'AbortError') {
-                    // Fallback to clipboard with enhanced message
-                    const fallbackText = `${shareContent.text} ${url}`;
-                    navigator.clipboard.writeText(fallbackText);
+        if (!sanitizedRecords) return;
+        try {
+            setIsCreatingCard(true);
 
-                    // Optional: Show a toast notification here
-                    console.log('Link copied to clipboard!');
+            const params = new URLSearchParams({
+                ens: ens,
+                address: sanitizedRecords.ethAddress.value,
+            });
+            if (avatar) {
+                params.set('avatar', avatar);
+            }
+            if (sanitizedRecords.header || sanitizedRecords.banner) {
+                params.set('header', sanitizedRecords.header || sanitizedRecords.banner || '');
+            }
+            const imageUrl = `/api/card-image?${params.toString()}`;
+
+            const response = await fetch(imageUrl);
+            if (!response.ok) {
+                throw new Error('Failed to generate image');
+            }
+
+            const blob = await response.blob();
+            const fileName = `${ens}-qr-card.png`;
+
+            // Check if Web Share API is available and supports files (mobile-friendly)
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], fileName, { type: blob.type })] })) {
+                try {
+                    const file = new File([blob], fileName, { type: blob.type });
+                    await navigator.share({
+                        files: [file],
+                        title: `${ens} QR Card`,
+                        text: `${ens} ENS Business Card - Scan to visit profile`
+                    });
+                    return; // Exit early if sharing was successful
+                } catch (shareError) {
+                    // User cancelled sharing or error occurred, fall back to download
+                    console.log('Share cancelled or failed, falling back to download', shareError);
                 }
             }
-        } else {
-            // Enhanced clipboard fallback
-            const fallbackText = `${shareContent.text} ${url}`;
-            navigator.clipboard.writeText(fallbackText);
 
-            // Optional: Show a toast notification here
-            console.log('Link copied to clipboard!');
+            // Fallback: Regular download for desktop or unsupported browsers
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = fileName;
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+        } catch (error) {
+            console.error('Failed to save card image:', error);
+        } finally {
+            setIsCreatingCard(false);
         }
     }
 
@@ -169,10 +165,10 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
                 </div>
             ) : (
                 !records ? (
-                        <div className="relative translate-y-[-20px] z-10 w-full">
-                            <p className="text-muted-foreground text-center text-[30px] font-normal leading-[90%]">ENS name: {ens} not found or has no records.</p>
-                        </div>
-                    ) :
+                    <div className="relative translate-y-[-20px] z-10 w-full">
+                        <p className="text-muted-foreground text-center text-[30px] font-normal leading-[90%]">ENS name: {ens} not found or has no records.</p>
+                    </div>
+                ) :
                     sanitizedRecords && (
                         <div className="relative translate-y-[-20px] z-10 w-full">
                             <DisplayCard subname={sanitizedRecords} ens={ens} isCardFlipped={isCardFlipped} />
@@ -191,12 +187,15 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
                     <div style={{
                         transform: "translateY(-40px)"
                     }} className="flex flex-col gap-2 w-full">
-                        <p className="text-base text-center text-gray-500 from-gradient-1-start bg-clip-text">Click to see the back!</p>
+                        <div className="flex flex-row gap-2 items-center justify-center">
+                            <p className="text-base text-center text-gray-500 from-gradient-1-start bg-clip-text">Click to flip</p>
+                            <RotateIcon />
+                        </div>
                         <div className="flex flex-row gap-4 items-center justify-center">
-                            <Button variant={"secondary"} onClick={handleShare}>
+                            <Button variant={"secondary"} onClick={handleSave} disabled={isCreatingCard}>
                                 <div className="flex flex-row gap-2 items-center">
-                                    <ShareIcon />
-                                    Share
+                                    <SaveIcon />
+                                    {isCreatingCard ? "Creating..." : "Save Card"}
                                 </div>
                             </Button>
                             {isMyCard && (
