@@ -19,8 +19,7 @@ export async function GET(request: NextRequest) {
             return new Response("ENS name and address are required", { status: 400 })
         }
 
-        // Generate QR code as data URL
-        const qrCodeUrl = `${process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://localhost:3000'}/${ens}`
+        const qrCodeUrl = `${serverEnv.justaNameOrigin}/${ens}`
         const qrCodeDataUrl = await QRCode.toDataURL(qrCodeUrl, {
             width: 300,
             margin: 1,
