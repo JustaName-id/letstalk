@@ -13,6 +13,7 @@ import { SubnamesSection } from "../create/subnamesSection";
 import { UpdateEnsSection } from "../create/updateEns";
 import { DisplayCardSkeleton } from "../displayCard/skeleton";
 import { SearchBar } from "./SearchBar";
+import { useScreen } from "usehooks-ts";
 
 export interface DisplaySectionProps {
     ens: string;
@@ -23,6 +24,7 @@ export interface DisplaySectionProps {
 export const DisplaySection = ({ ens, className = "", homePage }: DisplaySectionProps) => {
     const { openConnectModal } = useConnectModal();
     const { isConnected, address: walletAddress } = useAccount();
+    const  screen = useScreen()
     const { avatar } = useEnsAvatar({
         ens: ens,
         chainId: clientEnv.chainId,
@@ -65,6 +67,8 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
             const params = new URLSearchParams({
                 ens: ens,
                 address: sanitizedRecords.ethAddress.value,
+                aspectRatio: (screen.width /screen.height).toString()
+                // aspectRatio: wallpaperDims.aspectRatio.toString()
             });
             if (avatar) {
                 params.set('avatar', avatar);
@@ -74,6 +78,7 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
             }
             const imageUrl = `/api/card-image?${params.toString()}`;
 
+            console.log(imageUrl);
             const response = await fetch(imageUrl);
             if (!response.ok) {
                 throw new Error('Failed to generate image');
