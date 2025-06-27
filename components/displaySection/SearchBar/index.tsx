@@ -10,6 +10,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { useDebounceValue } from 'usehooks-ts'
 import { SearchItem } from "./searchItem"
 import { SearchSkeleton } from "./searchSkeleton"
+import {track} from "@vercel/analytics";
 
 interface SearchBarProps {
     onActiveChange: (value: boolean) => void;
@@ -23,12 +24,6 @@ export const SearchBar = ({ onActiveChange, isSearchActive, onlyIcon }: SearchBa
     const [debouncedValue] = useDebounceValue(searchValue.toLowerCase(), 150)
 
     const shouldFetchData = debouncedValue.length > 2;
-
-    // const { subnames, isSubnamesLoading } = useSearchSubnames({
-    //     name: debouncedValue,
-    //     chainId: clientEnv.chainId,
-    //     enabled: shouldFetchData,
-    // });
 
     const router = useRouter()
 
@@ -141,10 +136,6 @@ export const SearchBar = ({ onActiveChange, isSearchActive, onlyIcon }: SearchBa
         isLetsTalkLoading,
         isEthLoading, isBoxLoading, isBaseLoading]);
 
-    // const hasResults = useMemo(() => {
-    //     return manualDomains.length > 0 || filteredSubnames.length > 0;
-    // }, [manualDomains.length, filteredSubnames.length]);
-
     const hasResults = useMemo(() => {
         return manualDomains.length > 0;
     }, [manualDomains.length]);
@@ -154,6 +145,7 @@ export const SearchBar = ({ onActiveChange, isSearchActive, onlyIcon }: SearchBa
     }, [shouldFetchData, isAnyLoading, hasResults]);
 
     const handleSearchClick = (e: React.MouseEvent) => {
+        track("SearchClicked")
         e.stopPropagation();
         onActiveChange(true);
     };
@@ -168,10 +160,12 @@ export const SearchBar = ({ onActiveChange, isSearchActive, onlyIcon }: SearchBa
     };
 
     const handleSearchChange = (value: string) => {
+        track("Searching")
         setSearchValue(value.toLowerCase());
     };
 
     const handleItemSelect = (ens: string) => {
+        track("SearchItemClicked")
         setSearchValue("");
         onActiveChange(false);
         router.push(`/${ens}`);
@@ -193,7 +187,6 @@ export const SearchBar = ({ onActiveChange, isSearchActive, onlyIcon }: SearchBa
         }
     }, [isSearchActive]);
 
-    // console.log(manualDomains, filteredSubnames)
     if (isSearchActive) {
         return (
             <div className="w-full relative z-[100]">
@@ -222,13 +215,6 @@ export const SearchBar = ({ onActiveChange, isSearchActive, onlyIcon }: SearchBa
                                         onSelect={handleItemSelect}
                                     />
                                 ))}
-                                {/*{filteredSubnames.map((domain) => (*/}
-                                {/*    <SearchItem*/}
-                                {/*        key={domain.ens}*/}
-                                {/*        ens={domain.ens}*/}
-                                {/*        onSelect={handleItemSelect}*/}
-                                {/*    />*/}
-                                {/*))}*/}
                             </div>
                         )}
                     </div>

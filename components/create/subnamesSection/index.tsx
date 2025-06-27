@@ -7,6 +7,7 @@ import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { EnsCard } from "./ensCard";
 import {Dialog, DialogContent} from "@/components/ui/dialog";
+import {track} from "@vercel/analytics";
 
 export interface SubnamesSectionProps {
     onEnsSelect: (ens: { name: string, new: boolean }) => void;
@@ -69,6 +70,7 @@ export const SubnamesSection = ({ onEnsSelect, onEnsDrawerOpen, ensDrawerOpen }:
         }, {
             onSuccess: () => {
                 onEnsSelect({ name: `${debouncedUsername.toLowerCase()}.${clientEnv.justaNameEns}`, new: true });
+                track("SubnameClaimed")
                 setUsername("");
             }
         });

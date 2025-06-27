@@ -14,6 +14,7 @@ import { UpdateEnsSection } from "../create/updateEns";
 import { DisplayCardSkeleton } from "../displayCard/skeleton";
 import { SearchBar } from "./SearchBar";
 import { useScreen } from "usehooks-ts";
+import { track } from '@vercel/analytics';
 
 export interface DisplaySectionProps {
     ens: string;
@@ -59,6 +60,7 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
     }, [isOffchainResolversPending, offchainResolvers, walletAddress, address, records?.records.resolverAddress])
 
     const handleSave = async (e: React.MouseEvent) => {
+        track("ImageSaved")
         e.stopPropagation();
 
         if (!sanitizedRecords) return;
@@ -69,7 +71,6 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
                 ens: ens,
                 address: sanitizedRecords.ethAddress.value,
                 aspectRatio: (screen.width /screen.height).toString()
-                // aspectRatio: wallpaperDims.aspectRatio.toString()
             });
             if (avatar) {
                 params.set('avatar', avatar);
@@ -122,6 +123,7 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
     }
 
     const onUpdateDrawerChange = (open: boolean) => {
+
         if (!open) {
             setSelectedSubname(null);
             setSubnameDrawerOpen(false);
@@ -130,10 +132,10 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
 
     const onCardFlip = () => {
         if (subnameDrawerOpen || selectedSubname) return;
+        track("CardFlipped")
         setIsCardFlipped(!isCardFlipped)
         setHasUserFlipped(true);
     }
-
 
     return (
         <div onClick={onCardFlip} className={`flex flex-col h-[calc(100dvh-8px)] p-4 py-2  max-w-[700px] min-[700px]:mx-auto justify-between items-center relative  ${className}`}>
@@ -158,9 +160,11 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
                     <div className="flex flex-row gap-2">
                         <Button asChild variant={"secondary"} onClick={(e) => {
                             e.stopPropagation();
+                            track("MyCardsFlipped")
                             setSubnameDrawerOpen(true);
                             if (!isConnected) {
                                 openConnectModal?.()
+                                track("ConnectWalletTriggered")
                             }
                         }}>
                             <div className="flex flex-row gap-2 items-center">
@@ -237,7 +241,6 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
             {!!selectedSubname && (
                 <UpdateEnsSection subname={selectedSubname} onUpdateDrawerOpen={onUpdateDrawerChange} updateDrawerOpen={subnameDrawerOpen} />
             )}
-
         </div>
     );
 }
