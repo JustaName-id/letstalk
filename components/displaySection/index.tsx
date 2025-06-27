@@ -34,6 +34,7 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
         ens: ens,
         chainId: clientEnv.chainId,
     });
+    const [hasUserFlipped, setHasUserFlipped] = useState(false);
 
     const sanitizedRecords = useMemo(() => records?.sanitizedRecords, [records]);
 
@@ -127,8 +128,15 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
         }
     }
 
+    const onCardFlip = () => {
+        if (subnameDrawerOpen || selectedSubname) return;
+        setIsCardFlipped(!isCardFlipped)
+        setHasUserFlipped(true);
+    }
+
+
     return (
-        <div onClick={() => !subnameDrawerOpen && !selectedSubname && setIsCardFlipped(!isCardFlipped)} className={`flex flex-col h-[calc(100dvh-8px)] p-4 py-2  max-w-[700px] min-[700px]:mx-auto justify-between items-center relative  ${className}`}>
+        <div onClick={onCardFlip} className={`flex flex-col h-[calc(100dvh-8px)] p-4 py-2  max-w-[700px] min-[700px]:mx-auto justify-between items-center relative  ${className}`}>
             {address && (
                 <div className="absolute inset-0 h-[100dvh] overflow-hidden pointer-events-none z-0">
                     <div className="absolute inset-0 text-[99px] text-center leading-[90%] font-mono font-bold text-gray-400 opacity-10 break-all overflow-hidden">
@@ -176,7 +184,7 @@ export const DisplaySection = ({ ens, className = "", homePage }: DisplaySection
                 ) :
                     sanitizedRecords && (
                         <div className="relative translate-y-[-20px] z-10 w-full">
-                            <DisplayCard subname={sanitizedRecords} ens={ens} isCardFlipped={isCardFlipped} />
+                            <DisplayCard subname={sanitizedRecords} ens={ens} isCardFlipped={isCardFlipped} hasUserFlipped={hasUserFlipped} />
                         </div>
                     )
             )}

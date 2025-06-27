@@ -8,12 +8,12 @@ export interface DisplayCardProps {
     subname: SanitizedRecords;
     ens: string;
     isCardFlipped?: boolean;
+    hasUserFlipped?: boolean;
 }
 
-export const DisplayCard = ({ subname, ens, isCardFlipped }: DisplayCardProps) => {
+export const DisplayCard = ({ subname, ens, isCardFlipped, hasUserFlipped }: DisplayCardProps) => {
     const [isFlipped, setIsFlipped] = useState(isCardFlipped ?? false);
     const [showFlipHint, setShowFlipHint] = useState(false);
-    const [hasUserFlipped, setHasUserFlipped] = useState(false);
 
     useEffect(() => {
         setIsFlipped(isCardFlipped ?? false);
@@ -49,7 +49,6 @@ export const DisplayCard = ({ subname, ens, isCardFlipped }: DisplayCardProps) =
 
     const handleFlip = () => {
         setIsFlipped(!isFlipped);
-        setHasUserFlipped(true);
         setShowFlipHint(false);
     };
 
