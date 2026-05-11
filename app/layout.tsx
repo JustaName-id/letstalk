@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { Providers } from "./providers";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next"
+import { serverEnv } from "@/utils/config/serverEnv";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -24,7 +25,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} font-sans antialiased`}
       >
-        <Providers>
+        <Providers jawApiKey={serverEnv.justaNameApiKey}>
           <main className="h-[100dvh]">
             {children}
           </main>
