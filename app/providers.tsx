@@ -1,34 +1,12 @@
 "use client";
-import '@rainbow-me/rainbowkit/styles.css';
 
 import { clientEnv } from "@/utils/config/clientEnv";
+import { jaw } from "@jaw.id/wagmi";
 import { JustaNameProvider, JustaNameProviderConfig } from "@justaname.id/react";
-import { getDefaultConfig, getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { argentWallet, ledgerWallet, trustWallet } from "@rainbow-me/rainbowkit/wallets";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { http, WagmiProvider } from "wagmi";
-import { mainnet, sepolia, base } from "wagmi/chains";
-
-const { wallets } = getDefaultWallets();
-
-const config = getDefaultConfig({
-    appName: 'LetsTalk.eth',
-    projectId: clientEnv.projectId,
-    wallets: [
-        ...wallets,
-        {
-            groupName: 'Other',
-            wallets: [argentWallet, trustWallet, ledgerWallet],
-        },
-    ],
-    chains: [clientEnv.chainId === mainnet.id ? mainnet : sepolia, base],
-    transports: {
-        [clientEnv.chainId === mainnet.id ? mainnet.id : sepolia.id]: http(clientEnv.providerUrl),
-        [base.id]: http(),
-    },
-    ssr: true,
-});
-
+import { useMemo } from "react";
+import { createConfig, http, WagmiProvider } from "wagmi";
+import { base, mainnet, sepolia } from "wagmi/chains";
 
 const justaNameConfig: JustaNameProviderConfig = {
     networks: [{
@@ -44,16 +22,35 @@ const justaNameConfig: JustaNameProviderConfig = {
 
 const queryClient = new QueryClient();
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({ children, jawApiKey }: { children: React.ReactNode; jawApiKey: string }) {
+    const wagmiConfig = useMemo(() => createConfig({
+        chains: [mainnet, sepolia, base],
+        connectors: [
+            jaw({
+                apiKey: jawApiKey,
+                appName: "LetsTalk.eth",
+                defaultChainId: clientEnv.chainId,
+                ens: clientEnv.justaNameEns,
+                preference: {
+                    showTestnets: clientEnv.devMode,
+                },
+            }),
+        ],
+        transports: {
+            [mainnet.id]: clientEnv.chainId === mainnet.id ? http(clientEnv.providerUrl) : http(),
+            [sepolia.id]: clientEnv.chainId === sepolia.id ? http(clientEnv.providerUrl) : http(),
+            [base.id]: http(),
+        },
+        ssr: true,
+    }), [jawApiKey]);
+
     return (
-        <WagmiProvider config={config}>
+        <WagmiProvider config={wagmiConfig}>
             <QueryClientProvider client={queryClient}>
-                <RainbowKitProvider>
-                    <JustaNameProvider config={justaNameConfig}>
-                        {children}
-                    </JustaNameProvider>
-                </RainbowKitProvider>
+                <JustaNameProvider config={justaNameConfig}>
+                    {children}
+                </JustaNameProvider>
             </QueryClientProvider>
         </WagmiProvider>
     );
-} 
+}

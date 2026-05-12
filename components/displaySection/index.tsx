@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { checkIfMyCard } from "@/lib/helpers";
 import { LetsTalkIcon, PenIcon, RotateIcon, SaveIcon, SparklesIcon } from "@/lib/icons";
 import { clientEnv } from "@/utils/config/clientEnv";
+import { useConnect } from "@jaw.id/wagmi";
 import { useEnsAvatar, useOffchainResolvers, useRecords } from "@justaname.id/react";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useConfig } from "wagmi";
 import { SubnamesSection } from "../create/subnamesSection";
 import { UpdateEnsSection } from "../create/updateEns";
 import { DisplayCardSkeleton } from "../displayCard/skeleton";
@@ -23,7 +23,11 @@ export interface DisplaySectionProps {
 }
 
 export const DisplaySection = ({ ens, className = "", homePage }: DisplaySectionProps) => {
-    const { openConnectModal } = useConnectModal();
+    const wagmiConfig = useConfig();
+    const { mutate: jawConnect } = useConnect();
+    const openConnectModal = () => {
+        jawConnect({ connector: wagmiConfig.connectors[0] });
+    };
     const { isConnected, address: walletAddress } = useAccount();
     const  screen = useScreen()
     const { avatar } = useEnsAvatar({

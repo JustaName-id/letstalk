@@ -15,17 +15,15 @@ export interface EfpStats {
           next: { revalidate: 300 }
         }
       );
-  
+
       if (!response.ok) {
-        console.error(`EFP API responded with status: ${response.status}`);
         return null;
       }
-  
+
       const stats: EfpStats = await response.json();
       return stats;
-      
-    } catch (error) {
-      console.error(`Error fetching EFP stats for ${addressOrEns}:`, error);
+
+    } catch {
       return null;
     }
   }
