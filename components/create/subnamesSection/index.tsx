@@ -95,25 +95,6 @@ export const SubnamesSection = ({ onEnsSelect, onEnsDrawerOpen, ensDrawerOpen }:
                         <span> or claim a free letstalk.eth subname!</span>
                     </div>
                     <div className="flex flex-col h-full gap-3 justify-between">
-                        <div className="flex flex-col gap-4">
-                            <p className="text-foreground text-xl font-normal leading-[100%]">Claim a Subname</p>
-                            <div className="flex flex-col gap-1 w-full transition-all duration-500 ease-in-out">
-                                <div className="flex flex-row gap-2 justify-between">
-                                    <Input placeholder="subname" disabled={isAddSubnamePending} className="w-full" rightText={`.${clientEnv.justaNameEns}`} containerClassName="w-full" value={username} onChange={(e) => setUsername(e.target.value.toLowerCase())} />
-                                    <Button variant={"default"} disabled={isSubnameAvailablePending || !isSubnameAvailable?.isAvailable || isAddSubnamePending} onClick={handleClaim}>{isAddSubnamePending ? "Claiming..." : "Claim"}</Button>
-                                </div>
-                                {!isSubnameAvailable?.isAvailable && !isSubnameAvailablePending && (
-                                    <p className="text-xs text-red-500 font-semibold leading-[133%]">Subname taken</p>
-                                )}
-                                <p className="text-xs text-muted-foreground font-semibold leading-[133%]">Powered by justaname.id</p>
-                            </div>
-                        </div>
-                        <div className="flex flex-row w-full items-center gap-2 justify-between">
-                            <div className="w-full flex-1 h-[1px] bg-border" />
-                            <p className="text-muted-foreground text-xs font-normal leading-[100%]">Or</p>
-                            <div className="w-full flex-1 h-[1px] bg-border" />
-
-                        </div>
                         <div className="flex flex-col gap-3 w-full">
                             <p className="text-foreground text-xl font-normal leading-[100%]">{`Your ENS names`}</p>
                             <div className="flex flex-col gap-2 max-h-[30dvh] overflow-y-auto w-full">
@@ -127,6 +108,25 @@ export const SubnamesSection = ({ onEnsSelect, onEnsDrawerOpen, ensDrawerOpen }:
                                             padding: "30px 0"
                                         }} className="text-xs text-muted-foreground text-center py-5 font-semibold leading-[133%]">No ENS names found</p>
                                 }
+                            </div>
+                        </div>
+                        <div className="flex flex-row w-full items-center gap-2 justify-between">
+                            <div className="w-full flex-1 h-[1px] bg-border" />
+                            <p className="text-muted-foreground text-xs font-normal leading-[100%]">Or</p>
+                            <div className="w-full flex-1 h-[1px] bg-border" />
+
+                        </div>
+                        <div className="flex flex-col gap-4">
+                            <p className="text-foreground text-xl font-normal leading-[100%]">Claim a Subname</p>
+                            <div className="flex flex-col gap-1 w-full transition-all duration-500 ease-in-out">
+                                <div className="flex flex-row gap-2 justify-between">
+                                    <Input placeholder="subname" disabled={isAddSubnamePending} className="w-full" rightText={`.${clientEnv.justaNameEns}`} containerClassName="w-full" value={username} onChange={(e) => setUsername(e.target.value.toLowerCase())} />
+                                    <Button variant={"default"} disabled={isSubnameAvailablePending || !isSubnameAvailable?.isAvailable || isAddSubnamePending} onClick={handleClaim}>{isAddSubnamePending ? "Claiming..." : "Claim"}</Button>
+                                </div>
+                                {!isSubnameAvailable?.isAvailable && !isSubnameAvailablePending && (
+                                    <p className="text-xs text-red-500 font-semibold leading-[133%]">Subname taken</p>
+                                )}
+                                <p className="text-xs text-muted-foreground font-semibold leading-[133%]">Powered by justaname.id</p>
                             </div>
                         </div>
                         <div className="flex flex-row gap-[15px] mt-auto justify-between items-center">
